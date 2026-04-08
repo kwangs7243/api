@@ -1,8 +1,10 @@
 from flask import Flask ,session,redirect
 from routes.user_routes import user_bp
+from routes.memo_routes import memo_bp
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 app.register_blueprint(user_bp)
+app.register_blueprint(memo_bp)
 @app.route("/")
 def home():
     if not "user_id" in session:
@@ -12,8 +14,6 @@ def home():
 def sign_out():
     session.clear()
     return redirect("/sign_in")
-
-
 if __name__ == "__main__":
     app.run(debug=True)
         
