@@ -26,6 +26,14 @@ def delete():
     memo_id = request.form.get("memo_id")
     mm.delete_memo(memo_id,user_id)
     return redirect("/memo")
+@memo_bp.route("/memo/important",methods=["POST"])
+def important():
+    if not "user_id"  in session:
+        return redirect("/sign_in")
+    user_id = session['user_id']
+    memo_id = request.form.get("memo_id")
+    mm.set_important(memo_id,user_id)
+    return redirect("/memo")
 
 
 

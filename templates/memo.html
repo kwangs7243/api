@@ -10,10 +10,14 @@
             <button type="submit">추가</button>
         </form>
         {%for memo in memos%}
-        <p>{{memo.content}}
+        <p>{{memo.content}}{{"중요" if (memo.important) else ""}}
             <form action="/memo/delete" method="post">
                 <input type="hidden" name="memo_id" value="{{memo.id}}">
                 <button type="submit">삭제</button>
+            </form>
+            <form action="/memo/important" method="post">
+                <input type="hidden" name="memo_id" value="{{memo.id}}">
+                <button type="submit">중요</button>
             </form>
         </p>
         {%endfor%}
