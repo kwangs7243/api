@@ -26,27 +26,27 @@ class MemoModel:
             memo = memo.copy()
             view_memos.append(memo)
         return view_memos
-    def delete_memo(self,id, user_id): # 메모 삭제
+    def delete_memo(self,memo_id, user_id): # 메모 삭제
         try:
-            id = int(id)
+            memo_id = int(memo_id)
         except:
             return
         conn = db_connect()
         cursor = conn.cursor()
         sql = "UPDATE memos SET deleted = %s WHERE id = %s and user_id = %s"
-        cursor.execute(sql, (True, id, user_id))
+        cursor.execute(sql, (True, memo_id, user_id))
         conn.commit()
         conn.close()
         return
-    def set_important(self,id, user_id): # 중요 표시/해제
+    def set_important(self,memo_id, user_id): # 중요 표시/해제
         try:
-            id = int(id)
+            memo_id = int(memo_id)
         except:
             return
         conn = db_connect()
         cursor = conn.cursor()
         sql = "UPDATE memos SET important = NOT important WHERE id = %s and user_id = %s"
-        cursor.execute(sql, (id, user_id))
+        cursor.execute(sql, (memo_id, user_id))
         conn.commit()
         conn.close()
         return
