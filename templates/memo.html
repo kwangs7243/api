@@ -7,7 +7,7 @@
     <body>
         <header>
             메뉴 이동 현재페이지이름 사용자이름 영역입니다 <br>
-            <a href="/index">메인으로</a>
+            <a href="/">메인으로</a>
             <a href="/accountbook">가계부</a>
             <a href="/todo">할일목록</a>
             <a href="/sign_out">로그아웃</a>
@@ -30,13 +30,6 @@
                     <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
                     <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
                 </select>
-                <form action="/memo/update" method="post">
-                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                    <input type="hidden" name="order" value="{{ order }}">
-                    내용 수정 <input type="text" name="update" id="update">
-                    <button type="submit">수정하기</button>
-                </form>
             </form>
         </nav>
         <section>
@@ -50,6 +43,7 @@
         </section>
         <main>
             {% for memo in memos %}
+            <p>{{ loop.index }}</p>
             <p>{{ memo.content }}</p>
             <p>{{ "중요" if memo.important else ""}}</p>
             <form action="/memo/delete" method="post">
@@ -58,6 +52,14 @@
                 <input type="hidden" name="sort_by" value="{{ sort_by }}">
                 <input type="hidden" name="order" value="{{ order }}">
                 <button type="submit">삭제</button>
+            </form>
+            <form action="/memo/update" method="post">
+                <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                내용 수정 <input type="text" name="update" value="{{ memo.content }}">
+                <button type="submit">수정하기</button>
             </form>
             <form action="/memo/important" method="post">
                 <input type="hidden" name="memo_id" value="{{ memo.id }}">

@@ -39,7 +39,7 @@ class MemoModel:
             return
         conn = db_connect()
         cursor = conn.cursor()
-        sql = "UPDATE memos SET content = %s WHERE id = %s user_id = %s"
+        sql = "UPDATE memos SET content = %s WHERE id = %s and user_id = %s"
         cursor.execute(sql,(content,memo_id,user_id))
         conn.commit()
         conn.close()
@@ -83,13 +83,12 @@ class MemoModel:
         memos = self.filter_by_important(memos, important)
         memos = self.sort_memos(memos, sort_by, order)
         return memos
-    def get_user_name(user_id):
+    def get_user_name(self,user_id):
         conn = db_connect()
         cursor = conn.cursor()
         sql = "SELECT name FROM users WHERE id = %s"
-        cursor.execute(sql,(user_id))
+        cursor.execute(sql,user_id)
         name = cursor.fetchone()
         conn.close()
         if name:
             return name["name"]
-
