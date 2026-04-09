@@ -32,6 +32,18 @@ class MemoModel:
         conn.commit()
         conn.close()
         return
+    def update_memo(self,memo_id,user_id,content): # 메모내용 수정
+        try:
+            memo_id = int(memo_id)
+        except ValueError:
+            return
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = "UPDATE memos SET content = %s WHERE id = %s user_id = %s"
+        cursor.execute(sql,(content,memo_id,user_id))
+        conn.commit()
+        conn.close()
+        return
     def set_important(self,memo_id, user_id): # 중요 표시/해제
         try:
             memo_id = int(memo_id)
@@ -71,3 +83,13 @@ class MemoModel:
         memos = self.filter_by_important(memos, important)
         memos = self.sort_memos(memos, sort_by, order)
         return memos
+    def get_user_name(user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = "SELECT name FROM users WHERE id = %s"
+        cursor.execute(sql,(user_id))
+        name = cursor.fetchone()
+        conn.close()
+        if name:
+            return name["name"]
+

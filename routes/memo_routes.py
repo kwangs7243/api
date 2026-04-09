@@ -22,7 +22,8 @@ def main():
     order = request.args.get("order" , "desc")
     if not order in ["asc" , "desc"]:
         order = "desc"
-    memos = mm.get_final_memos(user_id)
+    name = mm.get_user_name(user_id)
+    memos = mm.get_final_memos(user_id, keyword=keyword, important=important, sort_by=sort_by, order=order, name=name)
     return render_template("memo.html",memos=memos,keyword = keyword,sort_by=sort_by,order=order,important=important)
 @memo_bp.route("/memo/add", methods=["POST"])
 def add():
