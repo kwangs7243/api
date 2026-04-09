@@ -9,7 +9,7 @@ def main():
         return redirect("/sign_in")
     user_id = session['user_id']
     keyword = request.args.get("keyword" , "").strip()
-    important_raw = request.args.get("important" , "0")
+    important_raw = request.args.get("important" , None)
     if important_raw == "1":
         important = True
     elif important_raw == "0":
