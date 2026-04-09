@@ -19,11 +19,11 @@ def main():
     sort_by = request.args.get("sort_by" , "created_at")
     if not sort_by in ["created_at","content","important"]:
         sort_by = "created_at"
-    order = request.args.get("oder" , "desc")
+    order = request.args.get("order" , "desc")
     if not order in ["asc" , "desc"]:
         order = "desc"
-    memos = mm.get_final_memos(user_id,keyword,sort_by,order,important)
-    return render_template("memo.html",memos=memos)
+    memos = mm.get_final_memos(user_id,keyword = keyword,sort_by=sort_by,order=order,important=important)
+    return render_template("memo.html",memos=memos,keyword = keyword,sort_by=sort_by,order=order,important=important)
 @memo_bp.route("/memo/add", methods=["POST"])
 def add():
     if not "user_id"  in session:

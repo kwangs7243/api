@@ -49,7 +49,7 @@ class MemoModel:
         filtered_memos = memos
         if not filtered_memos:
             return []
-        if keyword is not None:
+        if keyword:
             filtered_memos  = [memo for memo in filtered_memos if keyword in memo["content"]]
         return filtered_memos
     def sort_memos(self,memos,sort_by, sort_order): # 메모 정렬하기
@@ -63,10 +63,10 @@ class MemoModel:
         important_memos = memos
         if not important_memos:
             return []
-        if important:
+        if important is not None:
             important_memos = [memo for memo in important_memos if memo["important"]]
         return important_memos
-    def get_final_memos(self,user_id, keyword="", sort_by="all", order="asc", important=False): # 최종적으로 보여줄 메모 가져오기
+    def get_final_memos(self,user_id, keyword="", sort_by="all", order="desc", important=None): # 최종적으로 보여줄 메모 가져오기
         memos = self.get_user_memos(user_id)
         memos = self.filter_by_keyword(memos, keyword)
         memos = self.filter_by_important(memos, important)
