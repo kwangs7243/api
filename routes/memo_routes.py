@@ -22,7 +22,7 @@ def main():
     order = request.args.get("order" , "desc")
     if not order in ["asc" , "desc"]:
         order = "desc"
-    memos = mm.get_final_memos(user_id,keyword = keyword,sort_by=sort_by,order=order,important=important)
+    memos = mm.get_final_memos(user_id)
     return render_template("memo.html",memos=memos,keyword = keyword,sort_by=sort_by,order=order,important=important)
 @memo_bp.route("/memo/add", methods=["POST"])
 def add():
