@@ -66,7 +66,7 @@ class MemoModel:
         if important:
             important_memos = [memo for memo in important_memos if memo["important"]]
         return important_memos
-    def get_final_memos(self,user_id, keyword=None, sort_by="all", order="asc", important=False): # 최종적으로 보여줄 메모 가져오기
+    def get_final_memos(self,user_id, keyword="", sort_by="all", order="asc", important=False): # 최종적으로 보여줄 메모 가져오기
         memos = self.get_user_memos(user_id)
         memos = self.filter_by_keyword(memos, keyword)
         memos = self.filter_by_important(memos, important)

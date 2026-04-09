@@ -8,7 +8,21 @@ def main():
     if not "user_id"  in session:
         return redirect("/sign_in")
     user_id = session['user_id']
-    memos = mm.view_memos(user_id)
+    keyword = request.args.get("keyword" , "").strip()
+    important_raw = request.args.get("important" , "0")
+    if important_raw == "1":
+        important = True
+    elif important_raw == "0":
+        important = False
+    else:
+        important = None
+    sort_by = request.args.get("sort_by" , "created_at")
+    if not sort_by in ["created_at","content","important"]:
+        sort_by = "created_at"
+    order = request.args.get("oder" , "desc")
+    if not order in ["asc" , "desc"]:
+        order = "desc"
+    memos = mm.get_final_memos(user_id,keyword,sort_by,order,important)
     return render_template("memo.html",memos=memos)
 @memo_bp.route("/memo/add", methods=["POST"])
 def add():
