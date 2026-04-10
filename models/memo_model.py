@@ -5,17 +5,16 @@ class MemoModel:
         content = content.strip()
         if not content:
             return
-        date = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         conn = db_connect()
         cursor = conn.cursor()
-        sql = "INSERT INTO memos (user_id, content, important, deleted, created_at) VALUES (%s, %s, %s, %s, %s)"
-        cursor.execute(sql, (user_id, content, important, False, date))
+        sql = "INSERT INTO memos (user_id, content, important, deleted) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (user_id, content, important, False))
         conn.commit()
         conn.close()
     def get_user_memos(self,user_id): # 메모 보기
         conn = db_connect()
         cursor = conn.cursor()
-        sql = "SELECT id, user_id, content, important, deleted, created_at FROM memos WHERE user_id = %s and deleted = %s"
+        sql = "SELECT * FROM memos WHERE user_id = %s and deleted = %s"
         cursor.execute(sql, (user_id, False))
         memos = cursor.fetchall()
         conn.close()
@@ -36,6 +35,9 @@ class MemoModel:
         try:
             memo_id = int(memo_id)
         except ValueError:
+            return
+        content = content.strip()
+        if content == "":
             return
         conn = db_connect()
         cursor = conn.cursor()

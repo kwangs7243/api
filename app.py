@@ -8,7 +8,7 @@ app.secret_key = "your_secret_key"
 app.register_blueprint(user_bp)
 app.register_blueprint(memo_bp)
 @app.route("/")
-def home():
+def main():
     if not "user_id" in session:
         return redirect("/sign_in")
     user_id = session["user_id"]
