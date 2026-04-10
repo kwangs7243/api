@@ -27,3 +27,12 @@ class UserModel:
         conn.close()
         user_id = result["id"] if result else None
         return user_id
+    def get_user_name(self,user_id): # 유저이름 가져오기
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = "SELECT name FROM users WHERE id = %s"
+        cursor.execute(sql,user_id)
+        name = cursor.fetchone()
+        conn.close()
+        if name:
+            return name["name"]

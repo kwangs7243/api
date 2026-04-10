@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>메인페이지</title>
+    </head>
+    <body>
+        <!-- 사용자 이름과 로그아웃이 오는 영역 -->
+        <header>
+            <p>사용자 : {{ name }}</p>
+            <a href="/sign_out">로그아웃</a>
+        </header>
+        <hr>
+        <!-- 사용자의 메모 할일 가계부의 요약이 올 영역  -->
+        <nav>
+            사용자의 메모 할일 가계부의 요약이 올 영역입니다
+            <div>
+                메모 요약
+            </div>
+            <div>
+                할일 요약
+            </div>
+            <div>
+                가계부 요약
+            </div>
+        </nav>
+        <hr>
+        <!-- 메모 할일 가계부이동이 올영역 -->
+        <main>
+            <a href="/memo">메모</a>
+            <a href="/todo">할일</a>
+            <a href="/accountbook">가계부</a>
+        </main>
+    </body>
+</html>
