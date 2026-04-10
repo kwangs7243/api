@@ -11,11 +11,30 @@ class MemoModel:
         cursor.execute(sql, (user_id, content, important, False))
         conn.commit()
         conn.close()
-    def get_user_memos(self,user_id): # 메모 보기
+    def get_user_memos(self,user_id, keyword="", sort_by="created_at", order="desc", important=None): # 메모 보기
         conn = db_connect()
         cursor = conn.cursor()
-        sql = "SELECT * FROM memos WHERE user_id = %s and deleted = %s"
-        cursor.execute(sql, (user_id, False))
+        where_clauses = ["user_id = %s", "deleted = %s"]
+        params = [user_id, False]
+        keyword = keyword.strip()
+        if keyword:
+            where_clauses.append("content LIKE %s")
+            params.append(f"%{keyword}%")
+        if important is not None:
+            where_clauses.append("important = %s")
+            params.append(important)
+        if sort_by not in ["created_at", "content", "important"]:
+            sort_by = "created_at"
+        order = order.lower()
+        if order not in ["asc", "desc"]:
+            order = "desc"
+        sql = f"""
+            SELECT *
+                FROM memos
+                WHERE {" AND ".join(where_clauses)}
+                ORDER BY {sort_by} {order}
+                """
+        cursor.execute(sql, params)
         memos = cursor.fetchall()
         conn.close()
         return memos
@@ -58,30 +77,3 @@ class MemoModel:
         conn.commit()
         conn.close()
         return
-    def filter_by_keyword(self,memos,keyword): # 키워드로 필터링하기
-        keyword = keyword.strip() if keyword else None
-        filtered_memos = memos
-        if not filtered_memos:
-            return []
-        if keyword is not None:
-            filtered_memos  = [memo for memo in filtered_memos if keyword in memo["content"]]
-        return filtered_memos
-    def sort_memos(self,memos,sort_by, order): # 메모 정렬하기
-        sorted_memos = memos
-        if not sorted_memos:
-            return []
-        sorted_memos = sorted(memos, key=lambda x: x[sort_by], reverse=(order=="desc"))
-        return sorted_memos
-    def filter_by_important(self,memos,important): # 중요표시로 필터링하기
-        important_memos = memos
-        if not important_memos:
-            return []
-        if important is not None:
-            important_memos = [memo for memo in important_memos if memo["important"]==important]
-        return important_memos
-    def get_final_memos(self,user_id, keyword="", sort_by="created_at", order="desc", important=None): # 최종적으로 보여줄 메모 가져오기
-        memos = self.get_user_memos(user_id)
-        memos = self.filter_by_keyword(memos, keyword)
-        memos = self.filter_by_important(memos, important)
-        memos = self.sort_memos(memos, sort_by, order)
-        return memos

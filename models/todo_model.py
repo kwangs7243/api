@@ -7,85 +7,87 @@ class TodoModel:
             return
         conn = db_connect()
         cursor = conn.cursor()
-        sql = """INSERT INTO memos
-                    (user_id,content,completed,deleted)
-                    VALUES (%s,%s,%s,%s)"""
+        sql = """
+            INSERT INTO memos
+                (user_id,content,completed,deleted)
+                VALUES (%s,%s,%s,%s)
+            """
         cursor.execute(sql,(user_id,content,False,False))
         conn.commit()
         conn.close()
-    def get_user_todos(self,user_id): # 할일 보기
+    def get_user_todos(self, user_id, keyword="", completed=False, sort_by="created_at", order="desc"): # 할일 보기
         conn = db_connect()
         cursor = conn.cursor()
-        sql = """SELECT *
-                    FROM todos
-                    WHERE user_id = %s AND deleted = %s"""
-        cursor.execute(sql,(user_id,False))
+        where_clauses = ["user_id = %s", "deleted = %s"]
+        params = [user_id, False]
+        keyword = keyword.strip()
+        if keyword:
+            where_clauses.append("content LIKE %s")
+            params.append(f"%{keyword}%")
+        if completed is not None:
+            where_clauses.append("completed = %s")
+            params.append(completed)
+        if sort_by not in ["created_at", "content", "completed"]:
+            sort_by = "created_at"
+        order = order.lower()
+        if order not in ["asc", "desc"]:
+            order = "desc"
+        sql = f"""
+            SELECT *
+                FROM todos
+                WHERE {" AND ".join(where_clauses)}
+                ORDER BY {sort_by} {order}
+            """
+        cursor.execute(sql, params)
         todos = cursor.fetchall()
         conn.close()
         return todos
-    def delete_data(self,todo_id,user_id): # 할일 삭제
+    def delete_todo(self,todo_id,user_id): # 할일 삭제
         try:
             todo_id = int(todo_id)
-        except:
+        except ValueError:
             return
         conn = db_connect()
         cursor = conn.cursor()
-        sql = """UPDATE todos
-                    SET deleted = %s
-                    WHERE id = %s AND user_id = %s"""
+        sql = """
+            UPDATE todos
+                SET deleted = %s
+                WHERE id = %s AND user_id = %s
+            """
         cursor.execute(sql,(True,todo_id,user_id))
         conn.commit()
         conn.close()
-    def category_data(self,todos,):
-        category_data = self.get_data()
-        if not category_data:
-            return  
-        category = self.state["category"]
-        if category != "all":
-            category_data = [dic for dic in category_data if dic["category"] == category]
-        return category_data
-    def sorted_data(self):
-        sorted_data = self.get_data()
-        if not sorted_data:
-            return
-        column = self.state["sort_column"]
-        direction = self.state["sort_direction"]
-        if column is not None:
-            if direction == "asc":
-                sorted_data = sorted(sorted_data,key=lambda x:x[column],reverse=False)
-            else:
-                sorted_data = sorted(sorted_data,key=lambda x:x[column],reverse=True)
-        return sorted_data
-    def keyword_data(self):
-        keyword_data = self.get_data()
-        if not keyword_data:
-            return
-        keyword = self.state["keyword"]
-        keyword_data = [dic for dic in keyword_data if keyword in dic["content"]]
-        return keyword_data
-    def set_completed(self,number):
-        try:
-            original_idx = int(number) - 1
-        except:
-            return
-        self.todos[original_idx]["completed"] = True
-        return
-    def update_data(self,number,content):
+    def update_todo(self,todo_id,user_id,content):
         content = content.strip()
-        if not content:
+        if content == "":
             return
         try:
-            original_idx = int(number) - 1
-        except:
+            todo_id = int(todo_id)
+        except ValueError:
             return
-        self.todos[original_idx]["content"] = content
-        return
-    def view_data(self):
-        view_data = self.get_data()
-        view_data = self.keyword_data(view_data)
-        if not view_data:
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+            UPDATE todos
+                SET content = %s
+                WHERE id = %s AND user_id = %s
+            """
+        cursor.execute(sql,(content,todo_id,user_id))
+        conn.commit()
+        conn.close()
+    def set_completed(self,todo_id,user_id): # 완료여부 설정
+        try:
+            todo_id = int(todo_id)
+        except ValueError:
             return
-        view_data = self.category_data(view_data)
-        view_data = self.sorted_data(view_data)
-        return view_data
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+            UPDATE todos
+                SET completed = NOT completed
+                WHERE id = %s AND user_id = %s
+            """
+        cursor.execute(sql,(todo_id,user_id))
+        conn.commit()
+        conn.close()
 
