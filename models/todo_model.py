@@ -57,7 +57,7 @@ class TodoModel:
         cursor.execute(sql,(True,todo_id,user_id))
         conn.commit()
         conn.close()
-    def update_todo(self,todo_id,user_id,content):
+    def update_todo(self,todo_id,user_id,content): # 내용 수정 
         content = content.strip()
         if content == "":
             return

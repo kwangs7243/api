@@ -1,11 +1,10 @@
 from flask import Blueprint , session, redirect,render_template,request
 from models.memo_model import MemoModel
 from models.user_model import UserModel
-um = UserModel()
 mm = MemoModel()
+um = UserModel()
 memo_bp = Blueprint("memo", __name__)
-
-@memo_bp.route("/memo")
+@memo_bp.route("/")
 def main():
     if not "user_id"  in session:
         return redirect("/sign_in")
@@ -27,8 +26,12 @@ def main():
         order = "desc"
     name = um.get_user_name(user_id)
     memos = mm.get_user_memos(user_id, keyword=keyword, important=important, sort_by=sort_by, order=order)
-    return render_template("memo.html",memos=memos,keyword = keyword,sort_by=sort_by,order=order,important=important,name=name)
-@memo_bp.route("/memo/add", methods=["POST"])
+    return render_template(
+        "memo.html",
+        memos=memos,keyword = keyword,
+        sort_by=sort_by,order=order,
+        important=important,name=name)
+@memo_bp.route("/add", methods=["POST"])
 def add():
     if not "user_id"  in session:
         return redirect("/sign_in")
@@ -40,7 +43,7 @@ def add():
     order = request.form.get("order")
     mm.add_memo(user_id,content)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
-@memo_bp.route("/memo/delete",methods=["POST"])
+@memo_bp.route("/delete",methods=["POST"])
 def delete():
     if not "user_id"  in session:
         return redirect("/sign_in")
@@ -53,7 +56,7 @@ def delete():
     mm.delete_memo(memo_id,user_id)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
 
-@memo_bp.route("/memo/important",methods=["POST"])
+@memo_bp.route("/important",methods=["POST"])
 def important():
     if not "user_id"  in session:
         return redirect("/sign_in")
@@ -66,7 +69,7 @@ def important():
     mm.set_important(memo_id,user_id)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
 
-@memo_bp.route("/memo/update", methods=["POST"])
+@memo_bp.route("/update", methods=["POST"])
 def update():
     if not "user_id"  in session:
         return redirect("/sign_in")
