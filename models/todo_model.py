@@ -8,7 +8,7 @@ class TodoModel:
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
-            INSERT INTO memos
+            INSERT INTO todos
                 (user_id,content,completed,deleted)
                 VALUES (%s,%s,%s,%s)
             """

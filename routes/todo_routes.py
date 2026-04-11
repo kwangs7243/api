@@ -43,7 +43,7 @@ def add():
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
     tm.add_todo(user_id, content)
-    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+    return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/delete", methods=["POST"])
 def delete():
     if not "user_id" in session:
@@ -55,7 +55,7 @@ def delete():
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
     tm.delete_todo(todo_id, user_id)
-    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+    return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/completed", methods = ["POST"])
 def completed():
     if not "user_id" in session:
@@ -67,7 +67,7 @@ def completed():
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
     tm.set_completed(todo_id, user_id)
-    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+    return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/update", methods = ["POST"])
 def update():
     if not "user_id" in session:
@@ -80,5 +80,5 @@ def update():
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
     tm.update_todo(todo_id, user_id, content)
-    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+    return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 

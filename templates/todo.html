@@ -88,7 +88,7 @@
             </section>
             <!-- 할일 추가기능이 올 영역 -->
             <section>
-                <h2>메모 추가</h2>
+                <h2>할일 추가</h2>
 
                 <form action="/todo/add" method="post" id="add_form">
                     <input type="hidden" name="keyword" value="{{ keyword }}">
@@ -147,7 +147,7 @@
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                     <input type="hidden" name="order" value="{{ order }}">
                                     <button type="submit">
-                                        {{ "완료" if todo.completed else "완료취소" }}
+                                        {{ "완료취소" if todo.completed else "완료" }}
                                     </button>
                                 </form>
                             </div>
