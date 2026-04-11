@@ -18,7 +18,7 @@ def main():
     else:
         completed = None
     sort_by = request.args.get("sort_by" , "created_at")
-    if not sort_by in ["created_at","content","important"]:
+    if not sort_by in ["created_at","content","completed"]:
         sort_by = "created_at"
     order = request.args.get("order" , "desc")
     order = order.lower()
@@ -74,7 +74,7 @@ def update():
         return redirect("/sign_in")
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")
-    content = request.form.get("content")
+    content = request.form.get("update")
     keyword = request.form.get("keyword","")
     completed = request.form.get("completed")
     sort_by = request.form.get("sort_by")
