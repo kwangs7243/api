@@ -136,7 +136,7 @@
 
                             <p>
                                 <strong>상태:</strong>
-                                {{ "중요 메모" if todo.completed else "일반 메모" }}
+                                {{ "완료" if todo.completed else "미완료" }}
                             </p>
 
                             <div>
@@ -147,7 +147,7 @@
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                     <input type="hidden" name="order" value="{{ order }}">
                                     <button type="submit">
-                                        {{ "중요 해제" if todo.completed else "중요 설정" }}
+                                        {{ "완료" if todo.completed else "완료취소" }}
                                     </button>
                                 </form>
                             </div>

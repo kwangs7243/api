@@ -28,9 +28,9 @@ def main():
     memos = mm.get_user_memos(user_id, keyword=keyword, important=important, sort_by=sort_by, order=order)
     return render_template(
         "memo.html",
-        memos=memos,keyword = keyword,
-        sort_by=sort_by,order=order,
-        important=important,name=name)
+        memos = memos, keyword = keyword,
+        sort_by = sort_by, order = order,
+        important = important, name = name)
 @memo_bp.route("/add", methods=["POST"])
 def add():
     if not "user_id"  in session:
@@ -55,7 +55,6 @@ def delete():
     order = request.form.get("order")
     mm.delete_memo(memo_id,user_id)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
-
 @memo_bp.route("/important",methods=["POST"])
 def important():
     if not "user_id"  in session:
@@ -68,7 +67,6 @@ def important():
     order = request.form.get("order")
     mm.set_important(memo_id,user_id)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
-
 @memo_bp.route("/update", methods=["POST"])
 def update():
     if not "user_id"  in session:
@@ -82,7 +80,6 @@ def update():
     order = request.form.get("order")
     mm.update_memo(user_id=user_id,memo_id=memo_id,content=content)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
-
 
 
     

@@ -25,12 +25,14 @@ def main():
     if not order in ["asc" , "desc"]:
         order = "desc"
     name = um.get_user_name(user_id)
-    todos = tm.get_user_todos(user_id,keyword=keyword,completed=completed,sort_by=sort_by,order=order)
+    todos = tm.get_user_todos(
+                user_id, keyword = keyword, completed = completed,
+                sort_by = sort_by, order = order)
     return render_template(
             "todo.html",
-            todos=todos,keyword=keyword,completed=completed,
-            sort_by=sort_by,order=order,name=name)
-@todo_bp.route("/add", methods=["POST"])
+            todos = todos, keyword = keyword, completed = completed,
+            sort_by = sort_by, order = order, name = name)
+@todo_bp.route("/add", methods = ["POST"])
 def add():
     if not "user_id" in session:
         return redirect("/sign_in")
@@ -40,4 +42,43 @@ def add():
     completed = request.form.get("completed")
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
-    tm.add_todo(user_id,content)
+    tm.add_todo(user_id, content)
+    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+@todo_bp.route("/delete", methods=["POST"])
+def delete():
+    if not "user_id" in session:
+        return redirect("/sign_in")
+    user_id = session['user_id']
+    todo_id = request.form.get("todo_id")
+    keyword = request.form.get("keyword","")
+    completed = request.form.get("completed")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+    tm.delete_todo(todo_id, user_id)
+    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+@todo_bp.route("/completed", methods = ["POST"])
+def completed():
+    if not "user_id" in session:
+        return redirect("/sign_in")
+    user_id = session['user_id']
+    todo_id = request.form.get("todo_id")
+    keyword = request.form.get("keyword","")
+    completed = request.form.get("completed")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+    tm.set_completed(todo_id, user_id)
+    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+@todo_bp.route("/update", methods = ["POST"])
+def update():
+    if not "user_id" in session:
+        return redirect("/sign_in")
+    user_id = session['user_id']
+    todo_id = request.form.get("todo_id")
+    content = request.form.get("content")
+    keyword = request.form.get("keyword","")
+    completed = request.form.get("completed")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+    tm.update_todo(todo_id, user_id, content)
+    return redirect(f"/memo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
+
