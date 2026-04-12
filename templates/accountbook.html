@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>가계부</title>
+    </head>
+    <body>
+        <!-- 상단 화면안내 페이지 이동메뉴 영역 -->
+        <header>
+            <h1>통합 관리 시스템</h1>
+
+            <div>
+                <strong>현재 페이지:</strong> 가계부
+            </div>
+
+            <div>
+                <strong>사용자:</strong> {{ name }}
+            </div>
+
+            <nav>
+                <a href="/">메인으로</a>
+                <a href="/memo">메모</a>
+                <a href="/todo">할일목록</a>
+                <a href="/sign_out">로그아웃</a>
+            </nav>
+
+            <hr>
+        </header>
+        <!-- 가계부페이지의 기능과 내역 출력 영역 -->
+        <main>
+            <!-- 조회와 정렬기능이 위치할 영역 -->
+            <section>
+                <h2>조회 / 정렬</h2>
+
+                <form action="/accountbook" method="get" id="filter_form">
+                    <div>
+                        <label for="keyword">검색</label>
+                        <input
+                            type="text"
+                            name="keyword"
+                            id="keyword"
+                            value="{{ keyword }}"
+                            placeholder="메모 내용 검색"
+                        >
+                    </div>
+
+                    <div>
+                        <button type="submit">조회</button>
+                    </div>
+
+                    <div>
+                        <label for="category">카테고리</label>
+                        <select name="category" id="category">
+                            <option value="" {{ "selected" if category is none else "" }}>전체</option>
+                            <option value="1" {{ "selected" if category == "income" else "" }}>수입만</option>
+                            <option value="0" {{ "selected" if category == "expense" else "" }}>지출만</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="sort_by">정렬 기준</label>
+                        <select name="sort_by" id="sort_by">
+                            <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
+                            <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
+                            <option value="balance" {{ "selected" if sort_by == "balance" else "" }}>금액</option>
+                            <option value="category" {{ "selected" if sort_by == "category" else "" }}>카테고리</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="order">정렬 방향</label>
+                        <select name="order" id="order">
+                            <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
+                            <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
+                        </select>
+                    </div>
+
+                </form>
+
+                <p>
+                    검색/필터/정렬을 바꾸면 현재 목록 기준으로 다시 조회됩니다.
+                </p>
+
+                <p>
+                    빈 내용을 조회하면 검색조건을 초기화 할 수 있습니다.
+                </p>
+
+                <hr>
+            </section>
+            <!-- 내역 추가기능이 올 영역 -->
+            <section>
+                <h2>메모 추가</h2>
+
+                <form action="/memo/add" method="post" id="add_form">
+                    <input type="hidden" name="keyword" value="{{ keyword }}">
+                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                    <input type="hidden" name="order" value="{{ order }}">
+
+                    <div>
+                        <label for="add_content">카테고리</label>
+                        <input
+                            type="text"
+                            name="content"
+                            id="add_content"
+                            placeholder="메모 내용을 입력하세요"
+                        >
+                        <label for="add_content">내용</label>
+                        <input
+                            type="text"
+                            name="content"
+                            id="add_content"
+                            placeholder="메모 내용을 입력하세요"
+                        >
+                        <label for="add_content">내용</label>
+                        <input
+                            type="text"
+                            name="content"
+                            id="add_content"
+                            placeholder="메모 내용을 입력하세요"
+                        >
+                    </div>
+
+                    <div>
+                        <button type="submit">추가</button>
+                    </div>
+                </form>
+
+                <p id="add_form_msg"></p>
+
+                <hr>
+            </section>
+            <!-- 메모내용출력과 수정 삭제 중요 설정/해제가 올 영역 -->
+            <section>
+                <h2>메모 목록</h2>
+
+                {% if memos %}
+                    {% for memo in memos %}
+                        <article>
+                            <h3>{{ loop.index }}번 메모</h3>
+
+                            <p>
+                                <strong>내용:</strong>
+                                {{ memo.content }}
+                            </p>
+
+                            <p>
+                                <strong>작성일:</strong>
+                                {{ memo.created_at }}
+                            </p>
+
+                            <p>
+                                <strong>상태:</strong>
+                                {{ "중요 메모" if memo.important else "일반 메모" }}
+                            </p>
+
+                            <div>
+                                <form action="/memo/important" method="post">
+                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                                    <input type="hidden" name="keyword" value="{{ keyword }}">
+                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                    <input type="hidden" name="order" value="{{ order }}">
+                                    <button type="submit">
+                                        {{ "중요 해제" if memo.important else "중요 설정" }}
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div>
+                                <form action="/memo/update" method="post" class="update_form">
+                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                                    <input type="hidden" name="keyword" value="{{ keyword }}">
+                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                    <input type="hidden" name="order" value="{{ order }}">
+
+                                    <label>수정</label>
+                                    <input type="text" name="update" value="{{ memo.content }}">
+                                    <button type="submit">수정하기</button>
+                                </form>
+                            </div>
+
+                            <div>
+                                <form action="/memo/delete" method="post" class="delete_form">
+                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                                    <input type="hidden" name="keyword" value="{{ keyword }}">
+                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                    <input type="hidden" name="order" value="{{ order }}">
+                                    <button type="submit">삭제</button>
+                                </form>
+                            </div>
+
+                            <hr>
+                        </article>
+                    {% endfor %}
+                {% else %}
+                    <p>조건에 맞는 메모가 없습니다.</p>
+                {% endif %}
+            </section>
+        </main>
+
+        <script src="{{ url_for('static', filename='memo.js') }}"></script>
+    </body>
+</html>

@@ -1,7 +1,7 @@
 from db import db_connect
 class AccountBookModel:
     # 내용 추가
-    def add_AB(self,user_id,category,amount,content):
+    def add_transactions(self,user_id,category,amount,content):
         if category not in ["income","expensd"]:
             return
         
@@ -70,7 +70,63 @@ class AccountBookModel:
         transactions = cursor.fetchall()
         conn.close()
         return transactions
-
+    # 내역 삭제하기
+    def delete_transaction(self,tt_id,user_id):
+        try:
+            tt_id = int(tt_id)
+        except ValueError:
+            return
+        
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                UPDATE accountbook
+                    SET deleted = %s
+                    FROM user_id = %s AND id = %s
+                """
+        cursor.execute(sql, (True, user_id, tt_id))
+        conn.commit()
+        conn.close()
+    # 내역 수정하기
+    def update_transactions(self, tt_id, user_id, content="", category="", amount=""):
+        try:
+            tt_id = int(tt_id)
+        except ValueError:
+            return
+        
+        set_clauses = []
+        params = []
+        
+        if content:
+            set_clauses.append("content = %s")
+            params.append(content)
+        
+        if category:
+            if category in ["income", "expense"]:
+                set_clauses.append("category = %s")
+                params.append(category)
+        
+        if amount:
+            try:
+                amount = int(amount)
+            except ValueError:
+                return
+            set_clauses.append("amount = %s")
+            params.append(amount)
+        
+        if not set_clauses:
+            return
+        
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = f"""
+                UPDATE accountbook
+                    SET {",".join(set_clauses)}
+                    WHERE user_id = %s AND id = %s
+                """
+        cursor.execute(sql, params + [user_id, tt_id])
+        conn.commit()
+        conn.close()
 
 
 

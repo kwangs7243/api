@@ -43,7 +43,7 @@ class MemoModel:
                 SELECT *
                     FROM memos
                     WHERE {" AND ".join(where_clauses)}
-                    ORDER BY {sort_by}, id {order}
+                    ORDER BY {sort_by} {order}, id {order}
                 """
         cursor.execute(sql, params)
         memos = cursor.fetchall()
@@ -59,7 +59,8 @@ class MemoModel:
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
-                UPDATE memos SET deleted = %s 
+                UPDATE memos 
+                    SET deleted = %s 
                     WHERE id = %s and user_id = %s"""
         cursor.execute(sql, (True, memo_id, user_id))
         conn.commit()
@@ -78,7 +79,8 @@ class MemoModel:
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
-                UPDATE memos SET content = %s 
+                UPDATE memos 
+                    SET content = %s 
                     WHERE id = %s and user_id = %s
                 """
         cursor.execute(sql,(content,memo_id,user_id))
@@ -94,7 +96,8 @@ class MemoModel:
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
-                UPDATE memos SET important = NOT important 
+                UPDATE memos S
+                    ET important = NOT important 
                     WHERE id = %s and user_id = %s
                 """
         cursor.execute(sql, (memo_id, user_id))
