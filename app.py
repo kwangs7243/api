@@ -33,13 +33,15 @@ def main():
 
     summary_transaction = am.get_summary_transaction(user_id)
 
-    summary_transaction["total_balance"] = f"{summary_transaction['total_balance']:,}"
-    summary_transaction["income_sum"] = f"{summary_transaction['income_sum']:,}"
-    summary_transaction["expense_sum"] = f"{summary_transaction['expense_sum']:,}"
+    if summary_transaction:
+        f"{summary_transaction['total_balance']:,}" if summary_transaction["total_balance"] is not None else 0
+        f"{summary_transaction['income_sum']:,}" if summary_transaction["income_sum"] is not None else 0
+        f"{summary_transaction['expense_sum']:,}" if summary_transaction["expense_sum"] is not None else 0
 
     recent_transactions = am.get_recent_transactions(user_id)
-    for transaction in recent_transactions:
-        transaction["amount"] = f"{transaction['amount']:,}"
+    if recent_transactions:
+        for transaction in recent_transactions:
+            transaction["amount"] = f"{transaction['amount']:,}"
 
     return render_template(
         "index.html" , 
