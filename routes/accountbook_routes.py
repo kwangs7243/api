@@ -8,7 +8,7 @@ accountbook_bp = Blueprint("accountbook", __name__)
 @accountbook_bp.route("/")
 def main():
     if not "user_id" in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
 
     keyword = request.args.get("keyword", "").strip()

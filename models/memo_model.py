@@ -96,8 +96,8 @@ class MemoModel:
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
-                UPDATE memos S
-                    ET important = NOT important 
+                UPDATE memos 
+                    SET important = NOT important 
                     WHERE id = %s and user_id = %s
                 """
         cursor.execute(sql, (memo_id, user_id))
