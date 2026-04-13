@@ -8,7 +8,7 @@ accountbook_bp = Blueprint("accountbook", __name__)
 @accountbook_bp.route("/")
 def main():
     if not "user_id" in session:
-        return
+        return redirect("/sign_in")
     user_id = session['user_id']
 
     keyword = request.args.get("keyword", "").strip()
@@ -36,4 +36,25 @@ def main():
 
 @accountbook_bp.route("/add", methods = ["POST"])
 def add():
-    pass
+    if not "user_id" in session:
+        return redirect("/sign_in")
+    
+    user_id = session["user_id"]
+    keyword = request.form.get("keyword")
+    category = request.form.get("category")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+
+    select_category = request.form.get("select_category")
+    if not select_category in ["income", "expense"]:
+        return redirect("/accountbook")
+
+    amount = request.form.get("amount")
+    try:
+        amount = int(amount)
+    except ValueError:
+        return redirect("/accountbook")
+    content = request.form.get("content").strip()
+
+    am.add_transactions(user_id,select_category,amount,content)
+    return redirect(f"/accountbook?&keyword={keyword}&category{category}&sort_by={sort_by}&order={order}")
