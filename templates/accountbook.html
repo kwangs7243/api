@@ -62,7 +62,8 @@
                         <select name="sort_by" id="sort_by">
                             <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
                             <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
-                            <option value="balance" {{ "selected" if sort_by == "balance" else "" }}>금액</option>
+                            <option value="amount" {{ "selected" if sort_by == "amount" else "" }}>거래금액</option>
+                            <option value="balance" {{ "selected" if sort_by == "balance" else "" }}>잔액</option>
                             <option value="category" {{ "selected" if sort_by == "category" else "" }}>카테고리</option>
                         </select>
                     </div>
@@ -173,7 +174,7 @@
                                     <label>수정</label><br>
 
                                     <label for="update">카테고리</label>
-                                    <select name="update_category" id="category">
+                                    <select name="update_category">
                                     <option value="income" {{ "selected" if transaction.category == "income" else "" }}>수입</option>
                                     <option value="expense" {{ "selected" if transaction.category == "expense" else "" }}>지출</option>
                                     </select>
@@ -203,7 +204,7 @@
                         </article>
                     {% endfor %}
                 {% else %}
-                    <p>조건에 맞는 메모가 없습니다.</p>
+                    <p>조건에 맞는 내역이 없습니다.</p>
                 {% endif %}
             </section>
         </main>

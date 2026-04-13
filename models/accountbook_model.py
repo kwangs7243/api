@@ -38,7 +38,7 @@ class AccountBookModel:
             where_clauses.append("category = %s")
             params.append(category)
         
-        if sort_by not in ["created_at", "content", "amount", "balance"]:
+        if sort_by not in ["created_at", "content", "amount", "balance", "category"]:
             sort_by = "created_at"
         
         order = order.lower()

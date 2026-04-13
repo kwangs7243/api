@@ -18,7 +18,7 @@ def main():
         category = None
 
     sort_by = request.args.get("sort_by" , "created_at")
-    if  sort_by not in ["created_at","content","amount", "category"]:
+    if  sort_by not in ["created_at","content","amount", "category", "balance"]:
         sort_by = "created_at"
 
     order = request.args.get("order" , "desc")
@@ -83,7 +83,10 @@ def update():
         update_amount = int(update_amount)
     except ValueError:
         return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+    
     update_content = request.form.get("update_content").strip()
+    if not update_content:
+        return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
 
     am.update_transactions(tt_id, user_id, update_content, update_category, update_amount)
     return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
