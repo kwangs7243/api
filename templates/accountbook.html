@@ -190,7 +190,7 @@
 
                             <div>
                                 <form action="/accountbook/delete" method="post" class="delete_form">
-                                    <input type="hidden" name="accountbook_id" value="{{ transaction.id }}">
+                                    <input type="hidden" name="tt_id" value="{{ transaction.id }}">
                                     <input type="hidden" name="keyword" value="{{ keyword }}">
                                     <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">

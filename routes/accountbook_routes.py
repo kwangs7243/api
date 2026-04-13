@@ -68,11 +68,11 @@ def update():
         return redirect("/sign_in")
     
     user_id = session["user_id"]
+    tt_id = request.form.get("tt_id")
     keyword = request.form.get("keyword")
     category = request.form.get("category")
     sort_by = request.form.get("sort_by")
     order = request.form.get("order")
-    tt_id = request.form.get("tt_id")
 
     update_category = request.form.get("update_category")
     if update_category not in ["income", "expense"]:
@@ -87,6 +87,23 @@ def update():
 
     am.update_transactions(tt_id, user_id, update_content, update_category, update_amount)
     return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+
+@accountbook_bp.route("/delete", methods=["POST"])
+def delete():
+    if "user_id" not in session:
+        return redirect("/sign_in")
+    
+    user_id = session["user_id"]
+    tt_id = request.form.get("tt_id")
+    keyword = request.form.get("keyword")
+    category = request.form.get("category")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+
+    am.delete_transaction(tt_id, user_id)
+    return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+
+
 
 
 

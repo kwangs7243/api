@@ -82,7 +82,7 @@ class AccountBookModel:
         sql = """
                 UPDATE accountbook
                     SET deleted = %s
-                    FROM user_id = %s AND id = %s
+                    WHERE user_id = %s AND id = %s
                 """
         cursor.execute(sql, (True, user_id, tt_id))
         conn.commit()
