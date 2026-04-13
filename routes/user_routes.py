@@ -2,6 +2,7 @@ from flask import request, redirect, session, Blueprint,render_template
 from  models.user_model import UserModel
 um = UserModel()
 user_bp = Blueprint("user", __name__)
+
 @user_bp.route("/up", methods=["POST"])
 def sign_up():
     login_id = request.form.get("login_id")
@@ -11,6 +12,7 @@ def sign_up():
     user_name = request.form.get("user_name")
     um.sign_up(login_id, passwd, user_name)
     return redirect("/sign/in")
+
 @user_bp.route("/in", methods=["POST"])
 def sign_in():
     login_id = request.form.get("login_id")
@@ -20,9 +22,11 @@ def sign_in():
         return render_template("sign_in.html" ,server_msg = "아이디 또는 비밀번호가 틀렸습니다.")
     session["user_id"] = user_id
     return redirect("/")
+
 @user_bp.route("/in")
 def sign_in_form():
     return render_template("sign_in.html")
+
 @user_bp.route("/up")
 def sign_up_form():
     return render_template("sign_up.html")

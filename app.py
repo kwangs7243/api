@@ -4,13 +4,19 @@ from routes.memo_routes import memo_bp
 from routes.todo_routes import todo_bp
 from routes.accountbook_routes import accountbook_bp
 from models.user_model import UserModel
+from models.memo_model import MemoModel
+from models.todo_model import TodoModel
+from models.accountbook_model import AccountBookModel
 um = UserModel()
+mm = MemoModel()
+tm = TodoModel()
+am = AccountBookModel()
+
 app = Flask(__name__)
 app.register_blueprint(user_bp, url_prefix="/sign")
 app.register_blueprint(memo_bp, url_prefix="/memo")
 app.register_blueprint(todo_bp, url_prefix="/todo")
 app.register_blueprint(accountbook_bp, url_prefix="/accountbook")
-app.register_blueprint(user_bp)
 app.secret_key = "your_secret_key"
 @app.route("/")
 def main():
@@ -19,6 +25,22 @@ def main():
     user_id = session["user_id"]
     name = um.get_user_name(user_id=user_id)
 
-    return render_template("index.html" , name = name)
+    recent_memos = mm.get_recent_memos(user_id)
+    summary_memo = mm.get_summary_memo(user_id)
 
+    summary_todo = tm.get_summary_todo(user_id)
+    recent_todos = tm.get_recent_todos(user_id)
+
+    summary_transaction = am.get_summary_transaction(user_id)
+    recent_transactions = am.get_recent_transactions(user_id)
+
+
+    return render_template(
+        "index.html" , 
+        name = name, recent_memos=recent_memos, summary_memo=summary_memo,
+        summary_todo=summary_todo, recent_todos=recent_todos,
+        summary_transaction=summary_transaction, recent_transactions=recent_transactions)
+
+if __name__ == "__main__":
+    app.run(debug=True)
         

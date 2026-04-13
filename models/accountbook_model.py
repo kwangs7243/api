@@ -128,7 +128,7 @@ class AccountBookModel:
         conn.commit()
         conn.close()
 
-    def get_transactions_summary(self,user_id):
+    def get_summary_transaction(self,user_id):
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
@@ -140,11 +140,11 @@ class AccountBookModel:
                                 WHERE user_id = %s AND deleted = %s ) AS sub
                 """
         cursor.execute(sql, (user_id, False))
-        transactions_summary = cursor.fetchone()
+        summary_transactions = cursor.fetchone()
         conn.close()
-        return transactions_summary
+        return summary_transactions
     
-    def get_recent_transactions(user_id):
+    def get_recent_transactions(self, user_id):
         conn = db_connect()
         cursor = conn.cursor()
         sql = """

@@ -113,7 +113,7 @@ class MemoModel:
                         CASE WHEN important = TRUE THEN 1 ELSE 0 END) AS imp_t,
                     sum(
                         CASE WHEN important = FALSE THEN 1 ELSE 0 END) AS imp_f,
-	                count(*) AS total_memo,
+	                count(*) AS total
                     FROM memos
                     WHERE user_id = %s AND deleted = %s
                 """
@@ -123,7 +123,7 @@ class MemoModel:
 
         return summary_memo
     
-    def get_recent_todos(user_id):
+    def get_recent_memos(self, user_id):
         conn = db_connect()
         cursor = conn.cursor()
         sql = """
