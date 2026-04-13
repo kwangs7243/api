@@ -50,16 +50,45 @@ def add():
 
     select_category = request.form.get("select_category")
     if select_category not in ["income", "expense"]:
-        return redirect("/accountbook")
+        return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
 
     amount = request.form.get("amount")
     try:
         amount = int(amount)
     except ValueError:
-        return redirect("/accountbook")
+        return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
     content = request.form.get("content")
 
     am.add_transactions(user_id,select_category,amount,content)
     return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+
+@accountbook_bp.route("/update", methods=["POST"])
+def update():
+    if "user_id" not in session:
+        return redirect("/sign_in")
+    
+    user_id = session["user_id"]
+    keyword = request.form.get("keyword")
+    category = request.form.get("category")
+    sort_by = request.form.get("sort_by")
+    order = request.form.get("order")
+    tt_id = request.form.get("tt_id")
+
+    update_category = request.form.get("update_category")
+    if update_category not in ["income", "expense"]:
+        return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+
+    update_amount = request.form.get("update_amount")
+    try:
+        update_amount = int(update_amount)
+    except ValueError:
+        return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+    update_content = request.form.get("update_content").strip()
+
+    am.update_transactions(tt_id, user_id, update_content, update_category, update_amount)
+    return redirect(f"/accountbook?&keyword={keyword}&category={category}&sort_by={sort_by}&order={order}")
+
+
+
 
 
