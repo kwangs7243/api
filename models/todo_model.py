@@ -44,7 +44,7 @@ class TodoModel:
                 SELECT *
                     FROM todos
                     WHERE {" AND ".join(where_clauses)}
-                    ORDER BY {sort_by}, id {order}
+                    ORDER BY {sort_by} {order}, id {order}
                 """
         cursor.execute(sql, params)
         todos = cursor.fetchall()

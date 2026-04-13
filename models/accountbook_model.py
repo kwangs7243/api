@@ -98,6 +98,8 @@ class AccountBookModel:
         params = []
         
         content = content.strip()
+        if not content:
+            return
         set_clauses.append("content = %s")
         params.append(content)
         
