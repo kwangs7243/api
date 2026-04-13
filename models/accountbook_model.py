@@ -97,7 +97,7 @@ class AccountBookModel:
         set_clauses = []
         params = []
         
-        
+        content = content.strip()
         set_clauses.append("content = %s")
         params.append(content)
         

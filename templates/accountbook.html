@@ -169,8 +169,8 @@
 
                                     <label for="update">카테고리</label>
                                     <select name="update_category" id="category">
-                                    <option value="income" {{ "selected" if category == "income" else "" }}>수입</option>
-                                    <option value="expense" {{ "selected" if category == "expense" else "" }}>지출</option>
+                                    <option value="income" {{ "selected" if transaction.category == "income" else "" }}>수입</option>
+                                    <option value="expense" {{ "selected" if transaction.category == "expense" else "" }}>지출</option>
                                     </select>
 
                                     <label for="update">금액</label>
