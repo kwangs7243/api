@@ -28,14 +28,15 @@ def main():
 
     name = um.get_user_name(user_id)
     transactions = am.get_user_transactions(user_id, keyword=keyword, category=category, sort_by=sort_by, order=order)
-    for transaction in transactions:
-        transaction["format_amount"] = f"{transaction['amount']:,}"
-        transaction["format_balance"] = f"{transaction['balance']:,}"
+    if transactions:
+        for transaction in transactions:
+            transaction["format_amount"] = f"{transaction['amount']:,}"
+            transaction["format_balance"] = f"{transaction['balance']:,}"
     
     transactions_summary = am.get_summary_transaction(user_id)
-    total_balance = f"{transactions_summary['total_balance']:,}"
-    income_sum = f"{transactions_summary['income_sum']:,}"
-    expense_sum = f"{transactions_summary['expense_sum']:,}"
+    total_balance = f"{transactions_summary['total_balance']:,}" if transactions_summary['total_balance'] is not None else 0
+    income_sum = f"{transactions_summary['income_sum']:,}" if transactions_summary['income_sum'] is not None else 0
+    expense_sum = f"{transactions_summary['expense_sum']:,}" if transactions_summary['expense_sum'] is not None else 0
 
     return render_template(
         "accountbook.html", 

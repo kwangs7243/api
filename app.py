@@ -41,7 +41,7 @@ def main():
     recent_transactions = am.get_recent_transactions(user_id)
     if recent_transactions:
         for transaction in recent_transactions:
-            transaction["amount"] = f"{transaction['amount']:,}"
+             f"{transaction['amount']:,}" if transaction["amount"] is not None else 0
 
     return render_template(
         "index.html" , 
