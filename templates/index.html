@@ -31,31 +31,43 @@
                 <section class="panel dashboard-card">
                     <h2 class="section-title">메모 요약</h2>
                     <div class="summary-list">
-                        <p class="summary-item">중요 메모 수 : {{ summary_memo.imp_t }}</p>
-                        <p class="summary-item">일반 메모 수 : {{ summary_memo.imp_f }}</p>
-                        <p class="summary-item">총 메모 수 : {{ summary_memo.total }}</p>
+                        <p class="summary-item">
+                            중요 메모 수 : {{ summary_memo.imp_t if summary_memo.imp_t is not none else 0 }}
+                        </p>
+                        <p class="summary-item">
+                            일반 메모 수 : {{ summary_memo.imp_f if summary_memo.imp_f is not none else 0 }}
+                        </p>
+                        <p class="summary-item">
+                            총 메모 수 : {{ summary_memo.total if summary_memo.total is not none else 0 }}
+                        </p>
                     </div>
                 </section>
 
                 <section class="panel dashboard-card">
                     <h2 class="section-title">최근 메모 목록</h2>
                     <div class="card-list compact-list">
-                        {% for memo in recent_memos %}
-                            <article class="item-card compact-card">
-                                <span class="badge {{ 'badge-important' if memo.important else 'badge-normal' }}">
-                                    {{ "중요" if memo.important else "일반" }}
-                                </span>
-                                <p class="item-text">{{ memo.content }}</p>
-                            </article>
-                        {% endfor %}
+                        {% if recent_memos %}
+                            {% for memo in recent_memos %}
+                                <article class="item-card compact-card">
+                                    <span class="badge {{ 'badge-important' if memo.important else 'badge-normal' }}">
+                                        {{ "중요" if memo.important else "일반" }}
+                                    </span>
+                                    <p class="item-text">{{ memo.content }}</p>
+                                </article>
+                                {% endfor %}
+                        {% else %}
+                                <article class="item-card compact-card">
+                                    <p class="item-text">메모 목록이 없습니다.</p>
+                                </article>
+                        {% endif %}
                     </div>
                 </section>
 
                 <section class="panel dashboard-card">
                     <h2 class="section-title">할일 요약</h2>
                     <div class="summary-list">
-                        <p class="summary-item">완료 할일 수 : {{ summary_todo.com_t }}</p>
-                        <p class="summary-item">미완료 할일 수 : {{ summary_todo.com_f }}</p>
+                        <p class="summary-item">완료 할일 수 : {{ summary_todo.com_t if summary_todo.com_t is not none else 0 }}</p>
+                        <p class="summary-item">미완료 할일 수 : {{ summary_todo.com_f if summary_todo.com_f is not none else 0 }}</p>
                         <p class="summary-item">총 할일 수 : {{ summary_todo.total }}</p>
                         <p class="summary-item">완료율 : {{ summary_todo.com_per }} %</p>
                     </div>
@@ -64,14 +76,21 @@
                 <section class="panel dashboard-card">
                     <h2 class="section-title">최근 할일 목록</h2>
                     <div class="card-list compact-list">
-                        {% for todo in recent_todos %}
-                            <article class="item-card compact-card">
-                                <span class="badge {{ 'badge-done' if todo.completed else 'badge-pending' }}">
-                                    {{ "완료" if todo.completed else "미완료" }}
-                                </span>
-                                <p class="item-text">{{ todo.content }}</p>
-                            </article>
-                        {% endfor %}
+                        {% if recent_todos %}
+                            {% for todo in recent_todos %}
+                                <article class="item-card compact-card">
+                                    <span class="badge {{ 'badge-done' if todo.completed else 'badge-pending' }}">
+                                        {{ "완료" if todo.completed else "미완료" }}
+                                    </span>
+                                    <p class="item-text">{{ todo.content }}</p>
+                                </article>
+                                {% endfor %}
+                        {% else %}
+                                <article class="item-card compact-card">
+                                    <p class="item-text">할일 목록이 없습니다.</p>
+                                </article>
+                        {% endif %}
+
                     </div>
                 </section>
 
@@ -87,15 +106,21 @@
                 <section class="panel dashboard-card">
                     <h2 class="section-title">최근 내역 목록</h2>
                     <div class="card-list compact-list">
-                        {% for transaction in recent_transactions %}
-                            <article class="item-card compact-card">
-                                <span class="badge {{ 'badge-income' if transaction.category == 'income' else 'badge-expense' }}">
-                                    {{ "수입" if transaction.category == "income" else "지출" }}
-                                </span>
-                                <p class="item-text">{{ transaction.amount }} 원</p>
-                                <p class="item-text">{{ transaction.content }}</p>
-                            </article>
-                        {% endfor %}
+                        {% if recent_transactions %}
+                            {% for transaction in recent_transactions %}
+                                <article class="item-card compact-card">
+                                    <span class="badge {{ 'badge-income' if transaction.category == 'income' else 'badge-expense' }}">
+                                        {{ "수입" if transaction.category == "income" else "지출" }}
+                                    </span>
+                                    <p class="item-text">{{ transaction.amount }} 원</p>
+                                    <p class="item-text">{{ transaction.content }}</p>
+                                </article>
+                            {% endfor %}
+                        {% else %}
+                                <article class="item-card compact-card">
+                                    <p class="item-text">내역 목록이 없습니다.</p>
+                                </article>
+                        {% endif %}
                     </div>
                 </section>
             </main>
