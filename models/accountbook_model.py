@@ -88,7 +88,7 @@ class AccountBookModel:
         conn.commit()
         conn.close()
     # 내역 수정하기
-    def update_transactions(self, tt_id, user_id, content="", category="", amount=""):
+    def update_transactions(self, tt_id, user_id, content, category, amount):
         try:
             tt_id = int(tt_id)
         except ValueError:
@@ -97,22 +97,22 @@ class AccountBookModel:
         set_clauses = []
         params = []
         
-        if content:
-            set_clauses.append("content = %s")
-            params.append(content)
         
-        if category:
-            if category in ["income", "expense"]:
-                set_clauses.append("category = %s")
-                params.append(category)
+        set_clauses.append("content = %s")
+        params.append(content)
         
-        if amount:
-            try:
-                amount = int(amount)
-            except ValueError:
-                return
-            set_clauses.append("amount = %s")
-            params.append(amount)
+        
+        if category in ["income", "expense"]:
+            set_clauses.append("category = %s")
+            params.append(category)
+        
+        
+        try:
+            amount = int(amount)
+        except ValueError:
+            return
+        set_clauses.append("amount = %s")
+        params.append(amount)
         
         if not set_clauses:
             return

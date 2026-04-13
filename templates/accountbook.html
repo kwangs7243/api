@@ -52,8 +52,8 @@
                         <label for="category">카테고리</label>
                         <select name="category" id="category">
                             <option value="" {{ "selected" if category is none else "" }}>전체</option>
-                            <option value="1" {{ "selected" if category == "income" else "" }}>수입만</option>
-                            <option value="0" {{ "selected" if category == "expense" else "" }}>지출만</option>
+                            <option value="income" {{ "selected" if category == "income" else "" }}>수입만</option>
+                            <option value="expense" {{ "selected" if category == "expense" else "" }}>지출만</option>
                         </select>
                     </div>
 
@@ -89,35 +89,33 @@
             </section>
             <!-- 내역 추가기능이 올 영역 -->
             <section>
-                <h2>메모 추가</h2>
+                <h2>내역 추가</h2>
 
-                <form action="/memo/add" method="post" id="add_form">
+                <form action="/accountbook/add" method="post" id="add_form">
                     <input type="hidden" name="keyword" value="{{ keyword }}">
-                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
                     <input type="hidden" name="order" value="{{ order }}">
 
                     <div>
-                        <label for="add_content">카테고리</label>
+                        <label for="select_category">카테고리</label>
+                        <select name="select_category">
+                            <option value="income">수입</option>
+                            <option value="expense">지출</option>
+                        </select>
+                        <label for="add_amount">금액</label>
                         <input
                             type="text"
-                            name="content"
-                            id="add_content"
-                            placeholder="메모 내용을 입력하세요"
+                            name="amount"
+                            id="add_amount"
+                            placeholder="금액을 입력하세요"
                         >
                         <label for="add_content">내용</label>
                         <input
                             type="text"
                             name="content"
                             id="add_content"
-                            placeholder="메모 내용을 입력하세요"
-                        >
-                        <label for="add_content">내용</label>
-                        <input
-                            type="text"
-                            name="content"
-                            id="add_content"
-                            placeholder="메모 내용을 입력하세요"
+                            placeholder="내용을 입력하세요"
                         >
                     </div>
 
@@ -132,60 +130,64 @@
             </section>
             <!-- 메모내용출력과 수정 삭제 중요 설정/해제가 올 영역 -->
             <section>
-                <h2>메모 목록</h2>
+                <h2>가계부 목록</h2>
 
-                {% if memos %}
-                    {% for memo in memos %}
+                {% if transactions %}
+                    {% for transaction in transactions %}
                         <article>
-                            <h3>{{ loop.index }}번 메모</h3>
+                            <h3>{{ loop.index }}번 내역</h3>
+
+                            <p>
+                                <strong>카테고리:</strong>
+                                {{ transaction.category }}
+                            </p>
+
+                            <p>
+                                <strong>금액:</strong>
+                                {{ transaction.amount }}
+                            </p>
 
                             <p>
                                 <strong>내용:</strong>
-                                {{ memo.content }}
+                                {{ transaction.content }}
                             </p>
 
                             <p>
                                 <strong>작성일:</strong>
-                                {{ memo.created_at }}
-                            </p>
-
-                            <p>
-                                <strong>상태:</strong>
-                                {{ "중요 메모" if memo.important else "일반 메모" }}
+                                {{ transaction.created_at }}
                             </p>
 
                             <div>
-                                <form action="/memo/important" method="post">
-                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                                <form action="/accountbook/update" method="post" class="update_form">
+                                    <input type="hidden" name="accountbook_id" value="{{ accountbook.id }}">
                                     <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-                                    <button type="submit">
-                                        {{ "중요 해제" if memo.important else "중요 설정" }}
-                                    </button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <form action="/memo/update" method="post" class="update_form">
-                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                     <input type="hidden" name="order" value="{{ order }}">
 
-                                    <label>수정</label>
-                                    <input type="text" name="update" value="{{ memo.content }}">
+                                    <label>수정</label><br>
+
+                                    <label for="update">카테고리</label>
+                                    <select name="update_category" id="category">
+                                    <option value="income" {{ "selected" if category == "income" else "" }}>수입</option>
+                                    <option value="expense" {{ "selected" if category == "expense" else "" }}>지출</option>
+                                    </select>
+
+                                    <label for="update">금액</label>
+                                    <input type="text" name="update_amount" value="{{ transaction.amount }}">
+
+                                    <label for="update">내용</label>
+                                    <input type="text" name="update_content" value="{{ transaction.content }}">
+                                    
                                     <button type="submit">수정하기</button>
                                 </form>
                             </div>
 
                             <div>
-                                <form action="/memo/delete" method="post" class="delete_form">
-                                    <input type="hidden" name="memo_id" value="{{ memo.id }}">
+                                <form action="/accountbook/delete" method="post" class="delete_form">
+                                    <input type="hidden" name="accountbook_id" value="{{ accountbook.id }}">
                                     <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
+                                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                     <input type="hidden" name="order" value="{{ order }}">
                                     <button type="submit">삭제</button>
@@ -201,6 +203,6 @@
             </section>
         </main>
 
-        <script src="{{ url_for('static', filename='memo.js') }}"></script>
+        <script src="{{ url_for('static', filename='accountbook.js') }}"></script>
     </body>
 </html>
