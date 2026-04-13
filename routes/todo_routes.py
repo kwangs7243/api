@@ -7,7 +7,7 @@ todo_bp = Blueprint("todo",__name__)
 @todo_bp.route("/")
 def main():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session["user_id"]
     keyword = request.args.get("keyword" , "").strip()
@@ -40,7 +40,7 @@ def main():
 @todo_bp.route("/add", methods = ["POST"])
 def add():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session['user_id']
     keyword = request.form.get("keyword")
@@ -55,7 +55,7 @@ def add():
 @todo_bp.route("/delete", methods=["POST"])
 def delete():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")
@@ -70,7 +70,7 @@ def delete():
 @todo_bp.route("/completed", methods = ["POST"])
 def completed():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")
@@ -85,7 +85,7 @@ def completed():
 @todo_bp.route("/update", methods = ["POST"])
 def update():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")

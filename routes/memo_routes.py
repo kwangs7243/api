@@ -7,7 +7,7 @@ memo_bp = Blueprint("memo", __name__)
 @memo_bp.route("/")
 def main():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
     keyword = request.args.get("keyword" , "").strip()
     important_raw = request.args.get("important" , None)
@@ -34,7 +34,7 @@ def main():
 @memo_bp.route("/add", methods=["POST"])
 def add():
     if  "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
     keyword = request.form.get("keyword","")
     content = request.form.get("content")
@@ -47,7 +47,7 @@ def add():
 @memo_bp.route("/delete",methods=["POST"])
 def delete():
     if  "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")
     keyword = request.form.get("keyword","")
@@ -60,7 +60,7 @@ def delete():
 @memo_bp.route("/important",methods=["POST"])
 def important():
     if  "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")
     keyword = request.form.get("keyword","")
@@ -72,7 +72,7 @@ def important():
 @memo_bp.route("/update", methods=["POST"])
 def update():
     if  "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")
     keyword = request.form.get("keyword","")

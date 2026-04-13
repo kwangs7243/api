@@ -46,7 +46,7 @@ def main():
 @accountbook_bp.route("/add", methods = ["POST"])
 def add():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session["user_id"]
     keyword = request.form.get("keyword")
@@ -71,7 +71,7 @@ def add():
 @accountbook_bp.route("/update", methods=["POST"])
 def update():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session["user_id"]
     tt_id = request.form.get("tt_id")
@@ -100,7 +100,7 @@ def update():
 @accountbook_bp.route("/delete", methods=["POST"])
 def delete():
     if "user_id" not in session:
-        return redirect("/sign_in")
+        return redirect("/sign/in")
     
     user_id = session["user_id"]
     tt_id = request.form.get("tt_id")

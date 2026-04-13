@@ -115,7 +115,7 @@ class TodoModel:
                         CASE WHEN completed = TRUE THEN 1 ELSE 0 END) AS com_t,
                     sum(
                         CASE WHEN completed = FALSE THEN 1 ELSE 0 END) AS com_f,
-	                count(*) AS total,
+	                count(*) AS total_todo,
 	                COALESCE(
 	                        ROUND(
 	   		                    sum(CASE WHEN completed = TRUE THEN 1 ELSE 0 END) * 100.0 / nullif(count(*),0), 2
@@ -127,6 +127,22 @@ class TodoModel:
         cursor.execute(sql, (user_id, False))
         todos_summary = cursor.fetchone()
         conn.close()
-        
+
         return todos_summary
+    
+    def get_recent_todos(user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT completed, content
+                    FROM todos
+                    WHERE user_id = %s AND deleted = %s
+                    ORDER BY created_at desc, id asc
+                    LIMIT 5
+                """
+        cursor.execute(sql, (user_id, False))
+        recent_todos = cursor.fetchall()
+        conn.close()
+        
+        return recent_todos
 

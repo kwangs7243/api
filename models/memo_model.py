@@ -103,3 +103,38 @@ class MemoModel:
         cursor.execute(sql, (memo_id, user_id))
         conn.commit()
         conn.close()
+
+    def get_summary_memo(self, user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT 
+                    sum(
+                        CASE WHEN important = TRUE THEN 1 ELSE 0 END) AS imp_t,
+                    sum(
+                        CASE WHEN important = FALSE THEN 1 ELSE 0 END) AS imp_f,
+	                count(*) AS total_memo,
+                    FROM memos
+                    WHERE user_id = %s AND deleted = %s
+                """
+        cursor.execute(sql, (user_id, False))
+        summary_memo = cursor.fetchone()
+        conn.close()
+
+        return summary_memo
+    
+    def get_recent_todos(user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT important, content
+                    FROM memos
+                    WHERE user_id = %s AND deleted = %s
+                    ORDER BY created_at desc, id asc
+                    LIMIT 5
+                """
+        cursor.execute(sql, (user_id, False))
+        recent_memos = cursor.fetchall()
+        conn.close()
+        
+        return recent_memos
