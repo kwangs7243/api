@@ -105,4 +105,28 @@ class TodoModel:
         cursor.execute(sql,(todo_id,user_id))
         conn.commit()
         conn.close()
+    
+    def get_todos_summary(self,user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT 
+                    sum(
+                        CASE WHEN completed = TRUE THEN 1 ELSE 0 END) AS com_t,
+                    sum(
+                        CASE WHEN completed = FALSE THEN 1 ELSE 0 END) AS com_f,
+	                count(*) AS total,
+	                COALESCE(
+	                        ROUND(
+	   		                    sum(CASE WHEN completed = TRUE THEN 1 ELSE 0 END) * 100.0 / nullif(count(*),0), 2
+                                ),0	   
+	   		                ) AS com_per
+                    FROM todos
+                    WHERE user_id = %s AND deleted = %s
+                """
+        cursor.execute(sql, (user_id, False))
+        todos_summary = cursor.fetchone()
+        conn.close()
+        
+        return todos_summary
 
