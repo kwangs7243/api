@@ -54,15 +54,15 @@
 
             <div>
                 <label for="summary_transaction">가계부 요약</label>
-                <p>현재 잔액 : {{ summary_transaction.total_balance }}</p>
-                <p>총 수입 : {{ summary_transaction.income_sum }}</p>
-                <p>총 지출 : {{ summary_transaction.expense_sum }}</p>
+                <p>현재 잔액 : {{ summary_transaction.total_balance }} 원</p>
+                <p>총 수입 : {{ summary_transaction.income_sum }} 원</p>
+                <p>총 지출 : {{ summary_transaction.expense_sum }} 원</p>
             </div>
             <div>
                 <label for="recent_transactions">최근 내역 목록</label>
                 {% for transaction in recent_transactions %}
                 <p>{{ "수입" if transaction.category == "income" else "지출" }}</p>
-                <p>{{ transaction.amount }}</p>
+                <p>{{ transaction.amount }} 원</p>
                 <p>{{ transaction.content }}</p>
                 {% endfor %}
             </div>
