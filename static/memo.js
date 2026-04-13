@@ -56,8 +56,8 @@ if (addform) {
     })
 }
 
-
-updateforms.forEach(function (form) {
+if (updateforms) {
+    updateforms.forEach(function (form) {
     form.addEventListener(
         "submit", function (e) {
         const updateInput = form.querySelector("[name='update']");
@@ -75,17 +75,20 @@ updateforms.forEach(function (form) {
             alert("수정 내용은 100자 이하로 입력하세요.");
             updateInput.focus();
             return;
-        }
+            }
+        })
     })
-})
+}
 
-// 메모 삭제 확인
-deleteforms.forEach(function (form) {
-    form.addEventListener(
-        "submit", function (e) {
-        const ok = confirm("이 메모를 삭제하시겠습니까?");
-        if (!ok) {
-            e.preventDefault();
-        }
+
+if (deleteforms) {
+    deleteforms.forEach(function (form) {
+        form.addEventListener(
+            "submit", function (e) {
+            const ok = confirm("이 메모를 삭제하시겠습니까?");
+            if (!ok) {
+                e.preventDefault();
+            }
+        })
     })
-})
+}

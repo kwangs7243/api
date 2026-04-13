@@ -5,7 +5,7 @@
         <title>가계부</title>
     </head>
     <body>
-        <!-- 상단 화면안내 페이지 이동메뉴 영역 -->
+        <!-- 상단 화면안내 페이지 이동메뉴 요약본 영역 -->
         <header>
             <h1>통합 관리 시스템</h1>
 
@@ -22,6 +22,21 @@
                 <a href="/memo">메모</a>
                 <a href="/todo">할일목록</a>
                 <a href="/sign_out">로그아웃</a>
+            </nav>
+
+            <nav>
+                <p class="summary">
+                    현재 잔액 : {{ total_balance }}
+                </p>
+                
+                <p class="summary">
+                    총 수입 : {{ income_sum }}
+                </p>
+
+                <p class="summary">
+                    총 지출 : {{ expense_sum }}
+                </p>
+                    
             </nav>
 
             <hr>

@@ -31,11 +31,17 @@ def main():
     for transaction in transactions:
         transaction["format_amount"] = f"{transaction['amount']:,} 원"
         transaction["format_balance"] = f"{transaction['balance']:,} 원"
+    
+    transactions_summary = am.get_transactions_summary(user_id)
+    total_balance = f"{transactions_summary['total_balance']:,} 원"
+    income_sum = f"{transactions_summary['income_sum']:,} 원"
+    expense_sum = f"{transactions_summary['expense_sum']:,} 원"
 
     return render_template(
         "accountbook.html", 
         name=name, transactions=transactions, keyword=keyword, 
-        category=category, sort_by=sort_by, order=order)
+        category=category, sort_by=sort_by, order=order,
+        total_balance=total_balance, income_sum=income_sum, expense_sum=expense_sum)
 
 @accountbook_bp.route("/add", methods = ["POST"])
 def add():

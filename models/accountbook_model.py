@@ -128,6 +128,37 @@ class AccountBookModel:
         conn.commit()
         conn.close()
 
+    def get_transactions_summary(self,user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT (income_sum - expense_sum) AS total_balance , income_sum, expense_sum
+	                FROM(
+                        SELECT sum(CASE WHEN category = 'income' THEN amount ELSE 0 END ) AS income_sum,
+                                sum(CASE WHEN category = 'expense' THEN amount ELSE 0 END ) AS expense_sum                                       
+                                FROM accountbook
+                                WHERE user_id = %s AND deleted = %s ) AS sub
+                """
+        cursor.execute(sql, (user_id, False))
+        transactions_summary = cursor.fetchone()
+        conn.close()
+        return transactions_summary
+    
+    def get_recent_transactions(user_id):
+        conn = db_connect()
+        cursor = conn.cursor()
+        sql = """
+                SELECT category, content, amount
+                    FROM accountbook
+                    WHERE user_id = %s AND deleted = %s
+                    ORDER BY created_at desc, id asc
+                    LIMIT 5
+                """
+        cursor.execute(sql, (user_id, False))
+        recent_transactions = cursor.fetchall()
+        conn.close()
+        return recent_transactions
+
 
 
 
