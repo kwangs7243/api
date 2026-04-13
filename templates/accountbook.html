@@ -1,228 +1,258 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>가계부</title>
     </head>
-    <body>
-        <!-- 상단 화면안내 페이지 이동메뉴 요약본 영역 -->
-        <header>
-            <h1>통합 관리 시스템</h1>
+    <body class="page page-accountbook">
+        <div class="container">
+            <!-- 상단 화면안내 페이지 이동메뉴 요약본 영역 -->
+            <header class="page-header app-header">
+                <div class="page-header-top">
+                    <h1 class="site-title">통합 관리 시스템</h1>
 
-            <div>
-                <strong>현재 페이지:</strong> 가계부
-            </div>
+                    <div class="page-meta">
+                        <div class="current-page">
+                            <strong>현재 페이지:</strong> 가계부
+                        </div>
 
-            <div>
-                <strong>사용자:</strong> {{ name }}
-            </div>
+                        <div class="user-name">
+                            <strong>사용자:</strong> {{ name }}
+                        </div>
+                    </div>
+                </div>
 
-            <nav>
-                <a href="/">메인으로</a>
-                <a href="/memo">메모</a>
-                <a href="/todo">할일목록</a>
-                <a href="/sign_out">로그아웃</a>
-            </nav>
+                <nav class="main-nav">
+                    <a href="/" class="nav-link">메인으로</a>
+                    <a href="/memo" class="nav-link">메모</a>
+                    <a href="/todo" class="nav-link">할일목록</a>
+                    <a href="/sign/out" class="nav-link nav-link-logout">로그아웃</a>
+                </nav>
 
-            <nav>
-                <p class="summary">
-                    현재 잔액 : {{ total_balance }} 원
-                </p>
-                
-                <p class="summary">
-                    총 수입 : {{ income_sum }} 원
-                </p>
-
-                <p class="summary">
-                    총 지출 : {{ expense_sum }} 원
-                </p>
+                <section class="summary-bar account-summary">
+                    <p class="summary-item summary-balance">
+                        현재 잔액 : {{ total_balance }} 원
+                    </p>
                     
-            </nav>
+                    <p class="summary-item summary-income">
+                        총 수입 : {{ income_sum }} 원
+                    </p>
 
-            <hr>
-        </header>
-        <!-- 가계부페이지의 기능과 내역 출력 영역 -->
-        <main>
-            <!-- 조회와 정렬기능이 위치할 영역 -->
-            <section>
-                <h2>조회 / 정렬</h2>
+                    <p class="summary-item summary-expense">
+                        총 지출 : {{ expense_sum }} 원
+                    </p>
+                </section>
+            </header>
 
-                <form action="/accountbook" method="get" id="filter_form">
-                    <div>
-                        <label for="keyword">검색</label>
-                        <input
-                            type="text"
-                            name="keyword"
-                            id="keyword"
-                            value="{{ keyword }}"
-                            placeholder="메모 내용 검색"
-                        >
+            <!-- 가계부페이지의 기능과 내역 출력 영역 -->
+            <main class="page-main">
+                <!-- 조회와 정렬기능이 위치할 영역 -->
+                <section class="panel filter-panel">
+                    <h2 class="section-title">조회 / 정렬</h2>
+
+                    <form action="/accountbook" method="get" id="filter_form" class="form filter-form">
+                        <div class="form-row">
+                            <label for="keyword" class="form-label">검색</label>
+                            <input
+                                type="text"
+                                name="keyword"
+                                id="keyword"
+                                class="form-input"
+                                value="{{ keyword }}"
+                                placeholder="메모 내용 검색"
+                            >
+                        </div>
+
+                        <div class="form-row form-row-submit">
+                            <button type="submit" class="btn btn-primary">조회</button>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="category" class="form-label">카테고리</label>
+                            <select name="category" id="category" class="form-select">
+                                <option value="" {{ "selected" if category is none else "" }}>전체</option>
+                                <option value="income" {{ "selected" if category == "income" else "" }}>수입만</option>
+                                <option value="expense" {{ "selected" if category == "expense" else "" }}>지출만</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="sort_by" class="form-label">정렬 기준</label>
+                            <select name="sort_by" id="sort_by" class="form-select">
+                                <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
+                                <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
+                                <option value="amount" {{ "selected" if sort_by == "amount" else "" }}>거래금액</option>
+                                <option value="balance" {{ "selected" if sort_by == "balance" else "" }}>잔액</option>
+                                <option value="category" {{ "selected" if sort_by == "category" else "" }}>카테고리</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="order" class="form-label">정렬 방향</label>
+                            <select name="order" id="order" class="form-select">
+                                <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
+                                <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="panel-help">
+                        <p class="help-text">
+                            검색/필터/정렬을 바꾸면 현재 목록 기준으로 다시 조회됩니다.
+                        </p>
+
+                        <p class="help-text">
+                            빈 내용을 조회하면 검색조건을 초기화 할 수 있습니다.
+                        </p>
                     </div>
+                </section>
 
-                    <div>
-                        <button type="submit">조회</button>
-                    </div>
+                <!-- 내역 추가기능이 올 영역 -->
+                <section class="panel add-panel">
+                    <h2 class="section-title">내역 추가</h2>
 
-                    <div>
-                        <label for="category">카테고리</label>
-                        <select name="category" id="category">
-                            <option value="" {{ "selected" if category is none else "" }}>전체</option>
-                            <option value="income" {{ "selected" if category == "income" else "" }}>수입만</option>
-                            <option value="expense" {{ "selected" if category == "expense" else "" }}>지출만</option>
-                        </select>
-                    </div>
+                    <form action="/accountbook/add" method="post" id="add_form" class="form add-form">
+                        <input type="hidden" name="keyword" value="{{ keyword }}">
+                        <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
+                        <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                        <input type="hidden" name="order" value="{{ order }}">
 
-                    <div>
-                        <label for="sort_by">정렬 기준</label>
-                        <select name="sort_by" id="sort_by">
-                            <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
-                            <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
-                            <option value="amount" {{ "selected" if sort_by == "amount" else "" }}>거래금액</option>
-                            <option value="balance" {{ "selected" if sort_by == "balance" else "" }}>잔액</option>
-                            <option value="category" {{ "selected" if sort_by == "category" else "" }}>카테고리</option>
-                        </select>
-                    </div>
+                        <div class="form-row">
+                            <label for="select_category" class="form-label">카테고리</label>
+                            <select name="select_category" id="select_category" class="form-select">
+                                <option value="income">수입</option>
+                                <option value="expense">지출</option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label for="order">정렬 방향</label>
-                        <select name="order" id="order">
-                            <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
-                            <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
-                        </select>
-                    </div>
+                        <div class="form-row">
+                            <label for="add_amount" class="form-label">금액</label>
+                            <input
+                                type="text"
+                                name="amount"
+                                id="add_amount"
+                                class="form-input"
+                                placeholder="금액을 입력하세요"
+                            >
+                        </div>
 
-                </form>
+                        <div class="form-row">
+                            <label for="add_content" class="form-label">내용</label>
+                            <input
+                                type="text"
+                                name="content"
+                                id="add_content"
+                                class="form-input"
+                                placeholder="내용을 입력하세요"
+                            >
+                        </div>
 
-                <p>
-                    검색/필터/정렬을 바꾸면 현재 목록 기준으로 다시 조회됩니다.
-                </p>
+                        <div class="form-row form-row-submit">
+                            <button type="submit" class="btn btn-success">추가</button>
+                        </div>
+                    </form>
 
-                <p>
-                    빈 내용을 조회하면 검색조건을 초기화 할 수 있습니다.
-                </p>
+                    <p id="add_form_msg" class="form-message"></p>
+                </section>
 
-                <hr>
-            </section>
-            <!-- 내역 추가기능이 올 영역 -->
-            <section>
-                <h2>내역 추가</h2>
+                <!-- 내역출력과 수정 삭제 영역 -->
+                <section class="panel list-panel">
+                    <h2 class="section-title">가계부 목록</h2>
 
-                <form action="/accountbook/add" method="post" id="add_form">
-                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
-                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                    <input type="hidden" name="order" value="{{ order }}">
+                    {% if transactions %}
+                        <div class="card-list transaction-list">
+                            {% for transaction in transactions %}
+                                <article class="item-card transaction-card">
+                                    <div class="item-card-header">
+                                        <h3 class="item-title">{{ loop.index }}번 내역</h3>
+                                        <span class="badge {{ 'badge-income' if transaction.category == 'income' else 'badge-expense' }}">
+                                            {{ '수입' if transaction.category == 'income' else '지출' }}
+                                        </span>
+                                    </div>
 
-                    <div>
-                        <label for="select_category">카테고리</label>
-                        <select name="select_category">
-                            <option value="income">수입</option>
-                            <option value="expense">지출</option>
-                        </select>
-                        <label for="add_amount">금액</label>
-                        <input
-                            type="text"
-                            name="amount"
-                            id="add_amount"
-                            placeholder="금액을 입력하세요"
-                        >
-                        <label for="add_content">내용</label>
-                        <input
-                            type="text"
-                            name="content"
-                            id="add_content"
-                            placeholder="내용을 입력하세요"
-                        >
-                    </div>
+                                    <div class="item-meta">
+                                        <p class="item-text">
+                                            <strong>카테고리:</strong>
+                                            {{ '수입' if transaction.category == 'income' else '지출' }}
+                                        </p>
 
-                    <div>
-                        <button type="submit">추가</button>
-                    </div>
-                </form>
+                                        <p class="item-text">
+                                            <strong>금액:</strong>
+                                            {{ transaction.format_amount }} 원
+                                        </p>
 
-                <p id="add_form_msg"></p>
+                                        <p class="item-text">
+                                            <strong>잔액:</strong>
+                                            {{ transaction.format_balance }}
+                                        </p>
 
-                <hr>
-            </section>
-            <!-- 메모내용출력과 수정 삭제 중요 설정/해제가 올 영역 -->
-            <section>
-                <h2>가계부 목록</h2>
+                                        <p class="item-text">
+                                            <strong>내용:</strong>
+                                            {{ transaction.content }}
+                                        </p>
 
-                {% if transactions %}
-                    {% for transaction in transactions %}
-                        <article>
-                            <h3>{{ loop.index }}번 내역</h3>
+                                        <p class="item-text">
+                                            <strong>작성일:</strong>
+                                            {{ transaction.created_at }}
+                                        </p>
+                                    </div>
 
-                            <p>
-                                <strong>카테고리:</strong>
-                                {{ '수입' if transaction.category == 'income' else '지출' }}
-                            </p>
+                                    <div class="item-actions">
+                                        <div class="action-box">
+                                            <form action="/accountbook/update" method="post" class="form update-form update_form">
+                                                <input type="hidden" name="tt_id" value="{{ transaction.id }}">
+                                                <input type="hidden" name="keyword" value="{{ keyword }}">
+                                                <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
+                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                                <input type="hidden" name="order" value="{{ order }}">
 
-                            <p>
-                                <strong>금액:</strong>
-                                {{ transaction.format_amount }} 원
-                            </p>
+                                                <p class="action-title">수정</p>
 
-                            <p>
-                                <strong>잔액:</strong>
-                                {{ transaction.format_balance }}
-                            </p>
+                                                <div class="form-row">
+                                                    <label for="update_category_{{ transaction.id }}" class="form-label">카테고리</label>
+                                                    <select name="update_category" id="update_category_{{ transaction.id }}" class="form-select">
+                                                        <option value="income" {{ "selected" if transaction.category == "income" else "" }}>수입</option>
+                                                        <option value="expense" {{ "selected" if transaction.category == "expense" else "" }}>지출</option>
+                                                    </select>
+                                                </div>
 
-                            <p>
-                                <strong>내용:</strong>
-                                {{ transaction.content }}
-                            </p>
+                                                <div class="form-row">
+                                                    <label for="update_amount_{{ transaction.id }}" class="form-label">금액</label>
+                                                    <input type="text" name="update_amount" id="update_amount_{{ transaction.id }}" class="form-input" value="{{ transaction.amount }}">
+                                                </div>
 
-                            <p>
-                                <strong>작성일:</strong>
-                                {{ transaction.created_at }}
-                            </p>
+                                                <div class="form-row">
+                                                    <label for="update_content_{{ transaction.id }}" class="form-label">내용</label>
+                                                    <input type="text" name="update_content" id="update_content_{{ transaction.id }}" class="form-input" value="{{ transaction.content }}">
+                                                </div>
+                                                
+                                                <div class="form-row form-row-submit">
+                                                    <button type="submit" class="btn btn-warning">수정하기</button>
+                                                </div>
+                                            </form>
+                                        </div>
 
-                            <div>
-                                <form action="/accountbook/update" method="post" class="update_form">
-                                    <input type="hidden" name="tt_id" value="{{ transaction.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-
-                                    <label>수정</label><br>
-
-                                    <label for="update">카테고리</label>
-                                    <select name="update_category">
-                                    <option value="income" {{ "selected" if transaction.category == "income" else "" }}>수입</option>
-                                    <option value="expense" {{ "selected" if transaction.category == "expense" else "" }}>지출</option>
-                                    </select>
-
-                                    <label for="update">금액</label>
-                                    <input type="text" name="update_amount" value="{{ transaction.amount }}">
-
-                                    <label for="update">내용</label>
-                                    <input type="text" name="update_content" value="{{ transaction.content }}">
-                                    
-                                    <button type="submit">수정하기</button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <form action="/accountbook/delete" method="post" class="delete_form">
-                                    <input type="hidden" name="tt_id" value="{{ transaction.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-                                    <button type="submit">삭제</button>
-                                </form>
-                            </div>
-
-                            <hr>
-                        </article>
-                    {% endfor %}
-                {% else %}
-                    <p>조건에 맞는 내역이 없습니다.</p>
-                {% endif %}
-            </section>
-        </main>
+                                        <div class="action-box">
+                                            <form action="/accountbook/delete" method="post" class="form delete-form delete_form">
+                                                <input type="hidden" name="tt_id" value="{{ transaction.id }}">
+                                                <input type="hidden" name="keyword" value="{{ keyword }}">
+                                                <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
+                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <button type="submit" class="btn btn-danger">삭제</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-message">조건에 맞는 내역이 없습니다.</p>
+                    {% endif %}
+                </section>
+            </main>
+        </div>
 
         <script src="{{ url_for('static', filename='accountbook.js') }}"></script>
     </body>

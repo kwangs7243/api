@@ -1,22 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>회원가입</title>
     </head>
-    <body> 
-        <main>
-            <form method="post" action="/sign_up" id="sign_up">
-            <input type="text" name="login_id" placeholder="아이디" required>
-            <input type="text" name="user_name" placeholder="이름" required>
-            <input type="password" name="passwd" placeholder="비밀번호" required>
-            <input type="password" name="passwd_check" placeholder="비밀번호 확인" required>
-            <p>{{server_msg}}</p>
-            <p id="msg"></p>
-            <button type="submit">회원가입</button>
-            </form>
-            <a href="/sign_in">로그인</a>
-        </main>
+    <body class="page page-auth page-sign-up">
+        <div class="auth-container">
+            <main class="auth-main">
+                <section class="auth-card">
+                    <h1 class="auth-title">회원가입</h1>
+
+                    <form method="post" action="/sign/up" id="sign_up" class="form auth-form">
+                        <div class="form-row">
+                            <input type="text" name="login_id" class="form-input" placeholder="아이디" required>
+                        </div>
+
+                        <div class="form-row">
+                            <input type="text" name="user_name" class="form-input" placeholder="이름" required>
+                        </div>
+
+                        <div class="form-row">
+                            <input type="password" name="passwd" class="form-input" placeholder="비밀번호" required>
+                        </div>
+
+                        <div class="form-row">
+                            <input type="password" name="passwd_check" class="form-input" placeholder="비밀번호 확인" required>
+                        </div>
+
+                        <p class="server-message">{{server_msg}}</p>
+                        <p id="msg" class="form-message"></p>
+
+                        <div class="form-row form-row-submit">
+                            <button type="submit" class="btn btn-primary btn-block">회원가입</button>
+                        </div>
+                    </form>
+
+                    <div class="auth-links">
+                        <a href="/sign/in" class="auth-link">로그인</a>
+                    </div>
+                </section>
+            </main>
+        </div>
+
         <script src="{{ url_for('static', filename='sign_up.js') }}"></script>
     </body>
 </html>

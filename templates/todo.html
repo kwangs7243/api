@@ -1,190 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>할일</title>
     </head>
-    <body>
-        <!-- 상단 화면안내 페이지 이동메뉴 영역 -->
-        <header>
-            <h1>통합 관리 시스템</h1>
+    <body class="page page-todo">
+        <div class="container">
+            <!-- 상단 화면안내 페이지 이동메뉴 영역 -->
+            <header class="page-header app-header">
+                <div class="page-header-top">
+                    <h1 class="site-title">통합 관리 시스템</h1>
 
-            <div>
-                <strong>현재 페이지:</strong> 할일
-            </div>
+                    <div class="page-meta">
+                        <div class="current-page">
+                            <strong>현재 페이지:</strong> 할일
+                        </div>
 
-            <div>
-                <strong>사용자:</strong> {{ name }}
-            </div>
-
-            <nav>
-                <a href="/">메인으로</a>
-                <a href="/accountbook">가계부</a>
-                <a href="/memo">메모</a>
-                <a href="/sign_out">로그아웃</a>
-            </nav>
-
-            <hr>
-        </header>
-        <!-- 할일페이지의 기능과 메모내용 출력 영역 -->
-        <main>
-            <!-- 조회와 정렬기능이 위치할 영역 -->
-            <section>
-                <h2>조회 / 정렬</h2>
-
-                <form action="/todo" method="get" id="filter_form">
-                    <div>
-                        <label for="keyword">검색</label>
-                        <input
-                            type="text"
-                            name="keyword"
-                            id="keyword"
-                            value="{{ keyword }}"
-                            placeholder="할일 내용 검색"
-                        >
+                        <div class="user-name">
+                            <strong>사용자:</strong> {{ name }}
+                        </div>
                     </div>
+                </div>
 
-                    <div>
-                        <button type="submit">조회</button>
+                <nav class="main-nav">
+                    <a href="/" class="nav-link">메인으로</a>
+                    <a href="/accountbook" class="nav-link">가계부</a>
+                    <a href="/memo" class="nav-link">메모</a>
+                    <a href="/sign/out" class="nav-link nav-link-logout">로그아웃</a>
+                </nav>
+            </header>
+
+            <!-- 할일페이지의 기능과 내용 출력 영역 -->
+            <main class="page-main">
+                <!-- 조회와 정렬기능이 위치할 영역 -->
+                <section class="panel filter-panel">
+                    <h2 class="section-title">조회 / 정렬</h2>
+
+                    <form action="/todo" method="get" id="filter_form" class="form filter-form">
+                        <div class="form-row">
+                            <label for="keyword" class="form-label">검색</label>
+                            <input
+                                type="text"
+                                name="keyword"
+                                id="keyword"
+                                class="form-input"
+                                value="{{ keyword }}"
+                                placeholder="할일 내용 검색"
+                            >
+                        </div>
+
+                        <div class="form-row form-row-submit">
+                            <button type="submit" class="btn btn-primary">조회</button>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="completed" class="form-label">완료 여부</label>
+                            <select name="completed" id="completed" class="form-select">
+                                <option value="" {{ "selected" if completed is none else "" }}>전체</option>
+                                <option value="0" {{ "selected" if completed == false else "" }}>미완료만</option>
+                                <option value="1" {{ "selected" if completed == true else "" }}>완료만</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="sort_by" class="form-label">정렬 기준</label>
+                            <select name="sort_by" id="sort_by" class="form-select">
+                                <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
+                                <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
+                                <option value="completed" {{ "selected" if sort_by == "completed" else "" }}>완료</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="order" class="form-label">정렬 방향</label>
+                            <select name="order" id="order" class="form-select">
+                                <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
+                                <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="panel-help">
+                        <p class="help-text">
+                            검색/필터/정렬을 바꾸면 현재 목록 기준으로 다시 조회됩니다.
+                        </p>
+
+                        <p class="help-text">
+                            빈 내용을 조회하면 검색조건을 초기화 할 수 있습니다.
+                        </p>
                     </div>
+                </section>
 
-                    <div>
-                        <label for="completed">완료 여부</label>
-                        <select name="completed" id="completed">
-                            <option value="" {{ "selected" if completed is none else "" }}>전체</option>
-                            <option value="0" {{ "selected" if completed == false else "" }}>미완료만</option>
-                            <option value="1" {{ "selected" if completed == true else "" }}>완료만</option>
-                        </select>
-                    </div>
+                <!-- 할일 추가기능이 올 영역 -->
+                <section class="panel add-panel">
+                    <h2 class="section-title">할일 추가</h2>
 
-                    <div>
-                        <label for="sort_by">정렬 기준</label>
-                        <select name="sort_by" id="sort_by">
-                            <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
-                            <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
-                            <option value="completed" {{ "selected" if sort_by == "completed" else "" }}>완료</option>
-                        </select>
-                    </div>
+                    <form action="/todo/add" method="post" id="add_form" class="form add-form">
+                        <input type="hidden" name="keyword" value="{{ keyword }}">
+                        <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
+                        <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                        <input type="hidden" name="order" value="{{ order }}">
 
-                    <div>
-                        <label for="order">정렬 방향</label>
-                        <select name="order" id="order">
-                            <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
-                            <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
-                        </select>
-                    </div>
+                        <div class="form-row">
+                            <label for="add_content" class="form-label">내용</label>
+                            <input
+                                type="text"
+                                name="content"
+                                id="add_content"
+                                class="form-input"
+                                placeholder="할일 내용을 입력하세요"
+                            >
+                        </div>
 
-                </form>
+                        <div class="form-row form-row-submit">
+                            <button type="submit" class="btn btn-success">추가</button>
+                        </div>
+                    </form>
 
-                <p>
-                    검색/필터/정렬을 바꾸면 현재 목록 기준으로 다시 조회됩니다.
-                </p>
+                    <p id="add_form_msg" class="form-message"></p>
+                </section>
 
-                <p>
-                    빈 내용을 조회하면 검색조건을 초기화 할 수 있습니다.
-                </p>
+                <!-- 할일내용출력과 수정 삭제 완료설정/해제가 올 영역 -->
+                <section class="panel list-panel">
+                    <h2 class="section-title">할일 목록</h2>
 
-                <hr>
-            </section>
-            <!-- 할일 추가기능이 올 영역 -->
-            <section>
-                <h2>할일 추가</h2>
+                    {% if todos %}
+                        <div class="card-list todo-list">
+                            {% for todo in todos %}
+                                <article class="item-card todo-card">
+                                    <div class="item-card-header">
+                                        <h3 class="item-title">{{ loop.index }}번 할일</h3>
+                                        <span class="badge {{ 'badge-done' if todo.completed else 'badge-pending' }}">
+                                            {{ "완료" if todo.completed else "미완료" }}
+                                        </span>
+                                    </div>
 
-                <form action="/todo/add" method="post" id="add_form">
-                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                    <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
-                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                    <input type="hidden" name="order" value="{{ order }}">
+                                    <div class="item-meta">
+                                        <p class="item-text">
+                                            <strong>내용:</strong>
+                                            {{ todo.content }}
+                                        </p>
 
-                    <div>
-                        <label for="add_content">내용</label>
-                        <input
-                            type="text"
-                            name="content"
-                            id="add_content"
-                            placeholder="메모 내용을 입력하세요"
-                        >
-                    </div>
+                                        <p class="item-text">
+                                            <strong>작성일:</strong>
+                                            {{ todo.created_at }}
+                                        </p>
 
-                    <div>
-                        <button type="submit">추가</button>
-                    </div>
-                </form>
+                                        <p class="item-text">
+                                            <strong>상태:</strong>
+                                            {{ "완료" if todo.completed else "미완료" }}
+                                        </p>
+                                    </div>
 
-                <p id="add_form_msg"></p>
+                                    <div class="item-actions">
+                                        <div class="action-box">
+                                            <form action="/todo/completed" method="post" class="form toggle-form">
+                                                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                                                <input type="hidden" name="keyword" value="{{ keyword }}">
+                                                <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <button type="submit" class="btn btn-secondary">
+                                                    {{ "완료취소" if todo.completed else "완료" }}
+                                                </button>
+                                            </form>
+                                        </div>
 
-                <hr>
-            </section>
-            <!-- 메모내용출력과 수정 삭제 중요 설정/해제가 올 영역 -->
-            <section>
-                <h2>할일 목록</h2>
+                                        <div class="action-box">
+                                            <form action="/todo/update" method="post" class="form update-form update_form">
+                                                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                                                <input type="hidden" name="keyword" value="{{ keyword }}">
+                                                <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                                <input type="hidden" name="order" value="{{ order }}">
 
-                {% if todos %}
-                    {% for todo in todos %}
-                        <article>
-                            <h3>{{ loop.index }}번 메모</h3>
+                                                <p class="action-title">수정</p>
 
-                            <p>
-                                <strong>내용:</strong>
-                                {{ todo.content }}
-                            </p>
+                                                <div class="form-row">
+                                                    <label for="update_todo_{{ todo.id }}" class="form-label">내용</label>
+                                                    <input type="text" name="update" id="update_todo_{{ todo.id }}" class="form-input" value="{{ todo.content }}">
+                                                </div>
 
-                            <p>
-                                <strong>작성일:</strong>
-                                {{ todo.created_at }}
-                            </p>
+                                                <div class="form-row form-row-submit">
+                                                    <button type="submit" class="btn btn-warning">수정하기</button>
+                                                </div>
+                                            </form>
+                                        </div>
 
-                            <p>
-                                <strong>상태:</strong>
-                                {{ "완료" if todo.completed else "미완료" }}
-                            </p>
-
-                            <div>
-                                <form action="/todo/completed" method="post">
-                                    <input type="hidden" name="todo_id" value="{{ todo.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-                                    <button type="submit">
-                                        {{ "완료취소" if todo.completed else "완료" }}
-                                    </button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <form action="/todo/update" method="post" class="update_form">
-                                    <input type="hidden" name="todo_id" value="{{ todo.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-
-                                    <label>수정</label>
-                                    <input type="text" name="update" value="{{ todo.content }}">
-                                    <button type="submit">수정하기</button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <form action="/todo/delete" method="post" class="delete_form">
-                                    <input type="hidden" name="todo_id" value="{{ todo.id }}">
-                                    <input type="hidden" name="keyword" value="{{ keyword }}">
-                                    <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
-                                    <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                    <input type="hidden" name="order" value="{{ order }}">
-                                    <button type="submit">삭제</button>
-                                </form>
-                            </div>
-
-                            <hr>
-                        </article>
-                    {% endfor %}
-                {% else %}
-                    <p>조건에 맞는 메모가 없습니다.</p>
-                {% endif %}
-            </section>
-        </main>
+                                        <div class="action-box">
+                                            <form action="/todo/delete" method="post" class="form delete-form delete_form">
+                                                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                                                <input type="hidden" name="keyword" value="{{ keyword }}">
+                                                <input type="hidden" name="completed" value="{{ '' if completed is none else (1 if completed else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
+                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <button type="submit" class="btn btn-danger">삭제</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="empty-message">조건에 맞는 할일이 없습니다.</p>
+                    {% endif %}
+                </section>
+            </main>
+        </div>
 
         <script src="{{ url_for('static', filename='todo.js') }}"></script>
     </body>

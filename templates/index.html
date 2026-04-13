@@ -1,71 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>메인페이지</title>
     </head>
-    <body>
-        <!-- 사용자 이름과 로그아웃이 오는 영역 -->
-        <header>
-            <p>사용자 : {{ name }}</p>
-            <a href="/sign_out">로그아웃</a>
-        </header>
-        <hr>
-        <!-- 메모 할일 가계부이동이 올영역 -->
-        <nav>
-            <a href="/memo">메모</a>
-            <a href="/todo">할일</a>
-            <a href="/accountbook">가계부</a>
-        </nav>
+    <body class="page page-index">
+        <div class="container">
+            <!-- 사용자 이름과 로그아웃이 오는 영역 -->
+            <header class="page-header app-header">
+                <div class="page-header-top">
+                    <h1 class="site-title">통합 관리 시스템</h1>
+
+                    <div class="page-meta">
+                        <p class="user-name">사용자 : {{ name }}</p>
+                    </div>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="/memo" class="nav-link">메모</a>
+                    <a href="/todo" class="nav-link">할일</a>
+                    <a href="/accountbook" class="nav-link">가계부</a>
+                    <a href="/sign/out" class="nav-link nav-link-logout">로그아웃</a>
+                </nav>
+            </header>
+
+            <!-- 사용자의 메모 할일 가계부의 요약이 올 영역 -->
+            <main class="page-main dashboard">
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">메모 요약</h2>
+                    <div class="summary-list">
+                        <p class="summary-item">중요 메모 수 : {{ summary_memo.imp_t }}</p>
+                        <p class="summary-item">일반 메모 수 : {{ summary_memo.imp_f }}</p>
+                        <p class="summary-item">총 메모 수 : {{ summary_memo.total }}</p>
+                    </div>
+                </section>
+
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">최근 메모 목록</h2>
+                    <div class="card-list compact-list">
+                        {% for memo in recent_memos %}
+                            <article class="item-card compact-card">
+                                <span class="badge {{ 'badge-important' if memo.important else 'badge-normal' }}">
+                                    {{ "중요" if memo.important else "일반" }}
+                                </span>
+                                <p class="item-text">{{ memo.content }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">할일 요약</h2>
+                    <div class="summary-list">
+                        <p class="summary-item">완료 할일 수 : {{ summary_todo.com_t }}</p>
+                        <p class="summary-item">미완료 할일 수 : {{ summary_todo.com_f }}</p>
+                        <p class="summary-item">총 할일 수 : {{ summary_todo.total }}</p>
+                        <p class="summary-item">완료율 : {{ summary_todo.com_per }} %</p>
+                    </div>
+                </section>
+
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">최근 할일 목록</h2>
+                    <div class="card-list compact-list">
+                        {% for todo in recent_todos %}
+                            <article class="item-card compact-card">
+                                <span class="badge {{ 'badge-done' if todo.completed else 'badge-pending' }}">
+                                    {{ "완료" if todo.completed else "미완료" }}
+                                </span>
+                                <p class="item-text">{{ todo.content }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">가계부 요약</h2>
+                    <div class="summary-list">
+                        <p class="summary-item">현재 잔액 : {{ summary_transaction.total_balance }} 원</p>
+                        <p class="summary-item">총 수입 : {{ summary_transaction.income_sum }} 원</p>
+                        <p class="summary-item">총 지출 : {{ summary_transaction.expense_sum }} 원</p>
+                    </div>
+                </section>
+
+                <section class="panel dashboard-card">
+                    <h2 class="section-title">최근 내역 목록</h2>
+                    <div class="card-list compact-list">
+                        {% for transaction in recent_transactions %}
+                            <article class="item-card compact-card">
+                                <span class="badge {{ 'badge-income' if transaction.category == 'income' else 'badge-expense' }}">
+                                    {{ "수입" if transaction.category == "income" else "지출" }}
+                                </span>
+                                <p class="item-text">{{ transaction.amount }} 원</p>
+                                <p class="item-text">{{ transaction.content }}</p>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            </main>
+        </div>
     </body>
-    <!-- 사용자의 메모 할일 가계부의 요약이 올 영역  -->
-        <main>
-            사용자의 메모 할일 가계부의 요약이 올 영역입니다
-            <div>
-                <label for="memo_summary">메모 요약</label>
-                <p>중요 메모 수 : {{ summary_memo.imp_t }}</p>
-                <p>일반 메모 수 : {{ summary_memo.imp_f }}</p>
-                <p>총 메모 수 : {{ summary_memo.total }}</p>
-            </div>
-
-            <div>
-                <label for="recent_memos">최근 메모 목록</label>
-                {% for memo in recent_memos %}
-                <p>{{ "중요" if memo.important else "일반"}}</p>
-                <p>{{ memo.content }}</p>
-                {% endfor %}
-            </div>
-
-            <div>
-                <label for="todo_summary">할일 요약</label>
-                <p>완료 할일 수 : {{ summary_todo.com_t }}</p>
-                <p>미완료 할일 수 : {{ summary_todo.com_f }}</p>
-                <p>총 할일 수 : {{ summary_todo.total }}</p>
-                <p>완료율 : {{ summary_todo.com_per }} %</p>
-            </div>
-
-            <div>
-                <label for="recent_todos">최근 할일 목록</label>
-                {% for todo in recent_todos %}
-                <p>{{ "완료" if todo.completed else "미완료" }}</p>
-                <p>{{ todo.content }}</p>
-                {% endfor %}
-            </div>
-
-            <div>
-                <label for="summary_transaction">가계부 요약</label>
-                <p>현재 잔액 : {{ summary_transaction.total_balance }} 원</p>
-                <p>총 수입 : {{ summary_transaction.income_sum }} 원</p>
-                <p>총 지출 : {{ summary_transaction.expense_sum }} 원</p>
-            </div>
-            <div>
-                <label for="recent_transactions">최근 내역 목록</label>
-                {% for transaction in recent_transactions %}
-                <p>{{ "수입" if transaction.category == "income" else "지출" }}</p>
-                <p>{{ transaction.amount }} 원</p>
-                <p>{{ transaction.content }}</p>
-                {% endfor %}
-            </div>
-        </main>
-        <hr>
 </html>
