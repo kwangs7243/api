@@ -6,7 +6,7 @@ um = UserModel()
 memo_bp = Blueprint("memo", __name__)
 @memo_bp.route("/")
 def main():
-    if not "user_id"  in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     keyword = request.args.get("keyword" , "").strip()
@@ -18,11 +18,11 @@ def main():
     else:
         important = None
     sort_by = request.args.get("sort_by" , "created_at")
-    if not sort_by in ["created_at","content","important"]:
+    if sort_by not in ["created_at","content","important"]:
         sort_by = "created_at"
     order = request.args.get("order" , "desc")
     order = order.lower()
-    if not order in ["asc" , "desc"]:
+    if order not in ["asc" , "desc"]:
         order = "desc"
     name = um.get_user_name(user_id)
     memos = mm.get_user_memos(user_id, keyword=keyword, important=important, sort_by=sort_by, order=order)
@@ -33,7 +33,7 @@ def main():
         important = important, name = name)
 @memo_bp.route("/add", methods=["POST"])
 def add():
-    if not "user_id"  in session:
+    if  "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     keyword = request.form.get("keyword","")
@@ -43,9 +43,10 @@ def add():
     order = request.form.get("order")
     mm.add_memo(user_id,content)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
+
 @memo_bp.route("/delete",methods=["POST"])
 def delete():
-    if not "user_id"  in session:
+    if  "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")
@@ -55,9 +56,10 @@ def delete():
     order = request.form.get("order")
     mm.delete_memo(memo_id,user_id)
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
+
 @memo_bp.route("/important",methods=["POST"])
 def important():
-    if not "user_id"  in session:
+    if  "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")
@@ -69,7 +71,7 @@ def important():
     return redirect(f"/memo?&keyword={keyword}&important={important}&sort_by={sort_by}&order={order}")
 @memo_bp.route("/update", methods=["POST"])
 def update():
-    if not "user_id"  in session:
+    if  "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     memo_id = request.form.get("memo_id")

@@ -6,7 +6,7 @@ um = UserModel()
 todo_bp = Blueprint("todo",__name__)
 @todo_bp.route("/")
 def main():
-    if not "user_id" in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session["user_id"]
     keyword = request.args.get("keyword" , "").strip()
@@ -18,11 +18,11 @@ def main():
     else:
         completed = None
     sort_by = request.args.get("sort_by" , "created_at")
-    if not sort_by in ["created_at","content","completed"]:
+    if  sort_by not in ["created_at","content","completed"]:
         sort_by = "created_at"
     order = request.args.get("order" , "desc")
     order = order.lower()
-    if not order in ["asc" , "desc"]:
+    if  order not in ["asc" , "desc"]:
         order = "desc"
     name = um.get_user_name(user_id)
     todos = tm.get_user_todos(
@@ -34,7 +34,7 @@ def main():
             sort_by = sort_by, order = order, name = name)
 @todo_bp.route("/add", methods = ["POST"])
 def add():
-    if not "user_id" in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     keyword = request.form.get("keyword","")
@@ -46,7 +46,7 @@ def add():
     return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/delete", methods=["POST"])
 def delete():
-    if not "user_id" in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")
@@ -58,7 +58,7 @@ def delete():
     return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/completed", methods = ["POST"])
 def completed():
-    if not "user_id" in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")
@@ -70,7 +70,7 @@ def completed():
     return redirect(f"/todo?&keyword={keyword}&completed={completed}&sort_by={sort_by}&order={order}")
 @todo_bp.route("/update", methods = ["POST"])
 def update():
-    if not "user_id" in session:
+    if "user_id" not in session:
         return redirect("/sign_in")
     user_id = session['user_id']
     todo_id = request.form.get("todo_id")

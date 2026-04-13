@@ -139,12 +139,17 @@
 
                             <p>
                                 <strong>카테고리:</strong>
-                                {{ transaction.category }}
+                                {{ '수입' if transaction.category == 'income' else '지출' }}
                             </p>
 
                             <p>
                                 <strong>금액:</strong>
-                                {{ transaction.amount }}
+                                {{ transaction.format_amount }}
+                            </p>
+
+                            <p>
+                                <strong>잔액:</strong>
+                                {{ transaction.format_balance }}
                             </p>
 
                             <p>
@@ -159,7 +164,7 @@
 
                             <div>
                                 <form action="/accountbook/update" method="post" class="update_form">
-                                    <input type="hidden" name="accountbook_id" value="{{ accountbook.id }}">
+                                    <input type="hidden" name="accountbook_id" value="{{ transaction.id }}">
                                     <input type="hidden" name="keyword" value="{{ keyword }}">
                                     <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">
@@ -185,7 +190,7 @@
 
                             <div>
                                 <form action="/accountbook/delete" method="post" class="delete_form">
-                                    <input type="hidden" name="accountbook_id" value="{{ accountbook.id }}">
+                                    <input type="hidden" name="accountbook_id" value="{{ transaction.id }}">
                                     <input type="hidden" name="keyword" value="{{ keyword }}">
                                     <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
                                     <input type="hidden" name="sort_by" value="{{ sort_by }}">

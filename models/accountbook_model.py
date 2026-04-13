@@ -2,7 +2,7 @@ from db import db_connect
 class AccountBookModel:
     # 내용 추가
     def add_transactions(self,user_id,category,amount,content):
-        if category not in ["income","expensd"]:
+        if not category in ["income","expense"]:
             return
         
         try:
@@ -21,7 +21,7 @@ class AccountBookModel:
                     (user_id, category, amount, content, deleted)
                     VALUES(%s, %s, %s, %s, %s)
                 """
-        cursor.execute(sql(user_id, category, amount, content, False))
+        cursor.execute(sql,(user_id, category, amount, content, False))
         conn.commit()
         conn.close()
     # 가계부 내역 가져오기
@@ -34,7 +34,7 @@ class AccountBookModel:
             where_clauses.append("content LIKE %s")
             params.append(f"%{keyword}%")
 
-        if category is not None:
+        if category in ("income", "expense"):
             where_clauses.append("category = %s")
             params.append(category)
         
@@ -47,7 +47,7 @@ class AccountBookModel:
 
         outer_where = ""
         if where_clauses:
-            outer_where = "WHERE" + " AND ".join(where_clauses)
+            outer_where = "WHERE " + " AND ".join(where_clauses)
         
         conn = db_connect()
         cursor = conn.cursor()
