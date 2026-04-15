@@ -204,7 +204,10 @@ button {
 }
 
 .dashboard {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
 }
 
 .dashboard-card .summary-item {
@@ -615,7 +618,9 @@ button {
    최근 목록 / 메인 대시보드 카드
 ========================= */
 .compact-list {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
 }
 
 .compact-card {
@@ -801,4 +806,33 @@ button {
         min-height: 32px;
         font-size: 0.84rem;
     }
+}
+
+/* =========================
+   최근 목록 압축 (최종본)
+========================= */
+
+/* 카드 전체 높이 줄이기 */
+.compact-card {
+    padding: 10px 12px !important;
+    border-radius: 12px;
+}
+
+/* 내용 박스 높이 줄이기 */
+.compact-card .item-text {
+    min-height: auto !important;
+    padding: 8px 10px !important;
+    font-size: 0.9rem;
+}
+
+/* 배지 작게 */
+.compact-card .badge {
+    min-height: 24px !important;
+    padding: 0 8px !important;
+    font-size: 0.75rem;
+}
+
+/* 카드 간격 줄이기 */
+.compact-list {
+    gap: 8px !important;
 }
