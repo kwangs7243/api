@@ -1,4 +1,4 @@
-from db import db_connect
+from dbmanager import Dbmanager
 class AccountBookModel:
     # 내용 추가
     def add_transactions(self,user_id,category,amount,content):
@@ -14,16 +14,13 @@ class AccountBookModel:
         if not content:
             return
         
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = """
-                INSERT INTO accountbook
-                    (user_id, category, amount, content, deleted)
-                    VALUES(%s, %s, %s, %s, %s)
-                """
-        cursor.execute(sql,(user_id, category, amount, content, False))
-        conn.commit()
-        conn.close()
+        with Dbmanager(commit=True) as cursor:
+            sql = """
+                    INSERT INTO accountbook
+                        (user_id, category, amount, content, deleted)
+                        VALUES(%s, %s, %s, %s, %s)
+                    """
+            cursor.execute(sql,(user_id, category, amount, content, False))
     # 가계부 내역 가져오기
     def get_user_transactions(self, user_id, keyword="", category=None, sort_by="created_at", order="desc"):
         where_clauses = []
@@ -49,26 +46,24 @@ class AccountBookModel:
         if where_clauses:
             outer_where = "WHERE " + " AND ".join(where_clauses)
         
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = f"""
-                SELECT id, user_id, category, amount, content, balance, created_at
-                    FROM (
-                        SELECT id, user_id, category, amount, content, deleted, created_at,
-                        sum(CASE WHEN category = 'income' THEN amount
-                                WHEN category = 'expense' THEN -amount
-                                ELSE 0
-                            END
-                            ) OVER (ORDER BY created_at ASC, id ASC) AS balance
-                    FROM accountbook
-                    WHERE user_id = %s AND deleted = %s
-                    ) AS sub
-                    {outer_where}
-                    ORDER BY {sort_by} {order} , id {order}
-                """
-        cursor.execute(sql, params)
-        transactions = cursor.fetchall()
-        conn.close()
+        with Dbmanager() as cursor:
+            sql = f"""
+                    SELECT id, user_id, category, amount, content, balance, created_at
+                        FROM (
+                            SELECT id, user_id, category, amount, content, deleted, created_at,
+                            sum(CASE WHEN category = 'income' THEN amount
+                                    WHEN category = 'expense' THEN -amount
+                                    ELSE 0
+                                    END
+                                ) OVER (ORDER BY created_at ASC, id ASC) AS balance
+                        FROM accountbook
+                        WHERE user_id = %s AND deleted = %s
+                        ) AS sub
+                        {outer_where}
+                        ORDER BY {sort_by} {order} , id {order}
+                    """
+            cursor.execute(sql, params)
+            transactions = cursor.fetchall()
         return transactions
     # 내역 삭제하기
     def delete_transaction(self,tt_id,user_id):
@@ -77,16 +72,13 @@ class AccountBookModel:
         except ValueError:
             return
         
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = """
-                UPDATE accountbook
-                    SET deleted = %s
-                    WHERE user_id = %s AND id = %s
-                """
-        cursor.execute(sql, (True, user_id, tt_id))
-        conn.commit()
-        conn.close()
+        with Dbmanager(commit=True) as cursor:
+            sql = """
+                    UPDATE accountbook
+                        SET deleted = %s
+                        WHERE user_id = %s AND id = %s
+                    """
+            cursor.execute(sql, (True, user_id, tt_id))
     # 내역 수정하기
     def update_transactions(self, tt_id, user_id, content, category, amount):
         try:
@@ -119,46 +111,39 @@ class AccountBookModel:
         if not set_clauses:
             return
         
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = f"""
-                UPDATE accountbook
-                    SET {",".join(set_clauses)}
-                    WHERE user_id = %s AND id = %s
-                """
-        cursor.execute(sql, params + [user_id, tt_id])
-        conn.commit()
-        conn.close()
+        with Dbmanager(commit=True) as cursor:
+            sql = f"""
+                    UPDATE accountbook
+                        SET {",".join(set_clauses)}
+                        WHERE user_id = %s AND id = %s
+                    """
+            cursor.execute(sql, params + [user_id, tt_id])
 
     def get_summary_transaction(self,user_id):
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = """
-                SELECT (income_sum - expense_sum) AS total_balance , income_sum, expense_sum
-	                FROM(
-                        SELECT sum(CASE WHEN category = 'income' THEN amount ELSE 0 END ) AS income_sum,
-                                sum(CASE WHEN category = 'expense' THEN amount ELSE 0 END ) AS expense_sum                                       
-                                FROM accountbook
-                                WHERE user_id = %s AND deleted = %s ) AS sub
-                """
-        cursor.execute(sql, (user_id, False))
-        summary_transactions = cursor.fetchone()
-        conn.close()
+        with Dbmanager() as cursor:
+            sql = """
+                    SELECT (income_sum - expense_sum) AS total_balance , income_sum, expense_sum
+                        FROM(
+                            SELECT sum(CASE WHEN category = 'income' THEN amount ELSE 0 END ) AS income_sum,
+                                    sum(CASE WHEN category = 'expense' THEN amount ELSE 0 END ) AS expense_sum                                       
+                                    FROM accountbook
+                                    WHERE user_id = %s AND deleted = %s ) AS sub
+                    """
+            cursor.execute(sql, (user_id, False))
+            summary_transactions = cursor.fetchone()
         return summary_transactions
     
     def get_recent_transactions(self, user_id):
-        conn = db_connect()
-        cursor = conn.cursor()
-        sql = """
-                SELECT category, content, amount
-                    FROM accountbook
-                    WHERE user_id = %s AND deleted = %s
-                    ORDER BY created_at desc, id asc
-                    LIMIT 5
-                """
-        cursor.execute(sql, (user_id, False))
-        recent_transactions = cursor.fetchall()
-        conn.close()
+        with Dbmanager() as cursor:
+            sql = """
+                    SELECT category, content, amount
+                        FROM accountbook
+                        WHERE user_id = %s AND deleted = %s
+                        ORDER BY created_at desc, id asc
+                        LIMIT 5
+                    """
+            cursor.execute(sql, (user_id, False))
+            recent_transactions = cursor.fetchall()
         return recent_transactions
 
 
