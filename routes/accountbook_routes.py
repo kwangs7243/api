@@ -18,7 +18,7 @@ def main():
         order = request.args.get("order")
         )
 
-    name = um.get_user_name(dto)
+    name = um.get_user_name(dto.user_id)
     transactions = am.get_user_transactions(dto)
     if transactions:
         for transaction in transactions:
@@ -32,8 +32,7 @@ def main():
 
     return render_template(
         "accountbook.html", 
-        name=name, transactions=transactions, keyword=keyword, 
-        category=category, sort_by=sort_by, order=order,
+        name=name, transactions=transactions, dto=dto,
         total_balance=total_balance, income_sum=income_sum, expense_sum=expense_sum)
 
 @accountbook_bp.route("/add", methods = ["POST"])
