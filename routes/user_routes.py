@@ -1,5 +1,5 @@
 from flask import request, redirect, session, Blueprint,render_template
-from  models.user_model import UserModel
+from model.user_model import UserModel
 um = UserModel()
 user_bp = Blueprint("user", __name__)
 

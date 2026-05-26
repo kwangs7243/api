@@ -1,6 +1,7 @@
 from flask import Blueprint , session, redirect,render_template,request
-from models.accountbook_model import AccountBookModel
-from models.user_model import UserModel
+from model.accountbook_model import AccountBookModel
+from model.user_model import UserModel
+from dtos.accountbook_dto import TransactionFilterDTO, TransactionCreateDTO, TransactionUpdateDTO, TransactionDeleteDTO
 am = AccountBookModel()
 um = UserModel()
 accountbook_bp = Blueprint("accountbook", __name__)
@@ -9,31 +10,22 @@ accountbook_bp = Blueprint("accountbook", __name__)
 def main():
     if not "user_id" in session:
         return redirect("/sign/in")
-    user_id = session['user_id']
+    dto = TransactionFilterDTO(
+        user_id = session['user_id'],
+        keyword = request.args.get("keyword"),
+        category = request.args.get("category"),
+        sort_by = request.args.get("sort_by" ),
+        order = request.args.get("order")
+        )
 
-    keyword = request.args.get("keyword", "").strip()
-
-    category = request.args.get("category", None)
-    if  category not in ["income", "expense"]:
-        category = None
-
-    sort_by = request.args.get("sort_by" , "created_at")
-    if  sort_by not in ["created_at","content","amount", "category", "balance"]:
-        sort_by = "created_at"
-
-    order = request.args.get("order" , "desc")
-    order = order.lower()
-    if  order not in ["asc" , "desc"]:
-        order = "desc"
-
-    name = um.get_user_name(user_id)
-    transactions = am.get_user_transactions(user_id, keyword=keyword, category=category, sort_by=sort_by, order=order)
+    name = um.get_user_name(dto)
+    transactions = am.get_user_transactions(dto)
     if transactions:
         for transaction in transactions:
             transaction["format_amount"] = f"{transaction['amount']:,}"
             transaction["format_balance"] = f"{transaction['balance']:,}"
     
-    transactions_summary = am.get_summary_transaction(user_id)
+    transactions_summary = am.get_summary_transaction(dto)
     total_balance = f"{transactions_summary['total_balance']:,}" if transactions_summary['total_balance'] is not None else 0
     income_sum = f"{transactions_summary['income_sum']:,}" if transactions_summary['income_sum'] is not None else 0
     expense_sum = f"{transactions_summary['expense_sum']:,}" if transactions_summary['expense_sum'] is not None else 0

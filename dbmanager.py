@@ -1,14 +1,17 @@
 import pymysql
+from dotenv import load_dotenv
+import os
+load_dotenv()
 class Dbmanager:
     def __init__(self,commit=False):
         self.commit = commit
     def __enter__(self):
         self.conn = pymysql.connect(
-                    host="localhost",
-                    user="root",
-                    password="ezen123!",
-                    database="api",
-                    charset="utf8",
+                    host=os.environ.get("host"),
+                    user=os.environ.get("user"),
+                    password=os.environ.get("password"),
+                    database=os.environ.get("database"),
+                    charset="utf-8",
                     cursorclass=pymysql.cursors.DictCursor
                     )
         self.cursor = self.conn.cursor()

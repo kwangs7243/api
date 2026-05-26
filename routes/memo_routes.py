@@ -1,6 +1,6 @@
 from flask import Blueprint , session, redirect,render_template,request
-from models.memo_model import MemoModel
-from models.user_model import UserModel
+from model.memo_model import MemoModel
+from model.user_model import UserModel
 mm = MemoModel()
 um = UserModel()
 memo_bp = Blueprint("memo", __name__)
