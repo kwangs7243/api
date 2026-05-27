@@ -1,23 +1,30 @@
 from flask import request, redirect, session, Blueprint,render_template
-from model.user_model import UserModel
+from models.user_model import UserModel
+from dtos.user_dto import SingInDto, SingUpDto
 um = UserModel()
 user_bp = Blueprint("user", __name__)
 
 @user_bp.route("/up", methods=["POST"])
 def sign_up():
-    login_id = request.form.get("login_id")
-    if um.check_id_duplication(login_id):
+    sign_up_dto = SingUpDto(
+        login_id = request.form.get("login_id"),
+        passwd = request.form.get("passwd"),
+        user_name = request.form.get("user_name")
+    )
+    
+    if um.check_id_duplication(sign_up_dto):
         return render_template("sign_up.html",server_msg = "이미 존재하는 아이디입니다.")
-    passwd = request.form.get("passwd")
-    user_name = request.form.get("user_name")
-    um.sign_up(login_id, passwd, user_name)
+    um.sign_up(sign_up_dto)
     return redirect("/sign/in")
 
 @user_bp.route("/in", methods=["POST"])
 def sign_in():
-    login_id = request.form.get("login_id")
-    passwd = request.form.get("passwd")
-    user_id = um.sign_in(login_id, passwd)
+    sign_in_dto = SingInDto(
+        login_id = request.form.get("login_id"),
+        passwd = request.form.get("passwd")
+        )
+    
+    user_id = um.sign_in(sign_in_dto)
     if user_id is None:
         return render_template("sign_in.html" ,server_msg = "아이디 또는 비밀번호가 틀렸습니다.")
     session["user_id"] = user_id

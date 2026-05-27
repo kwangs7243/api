@@ -17,7 +17,7 @@ app.register_blueprint(user_bp, url_prefix="/sign")
 app.register_blueprint(memo_bp, url_prefix="/memo")
 app.register_blueprint(todo_bp, url_prefix="/todo")
 app.register_blueprint(accountbook_bp, url_prefix="/accountbook")
-app.secret_key = "your_secret_key"
+app.secret_key = "kwang"
 @app.route("/")
 def main():
     if not "user_id" in session:

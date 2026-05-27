@@ -2,7 +2,6 @@ ALLOWED_CATEGORY = ("income", "expense")
 ALLOWED_SORT = ("created_at", "content", "amount", "category", "balance")
 ALLOWED_ORDER = ("asc", "desc")
 class TransactionFilterDTO:
-
     def __init__(self, user_id, keyword="", category=None, sort_by="created_at", order="desc"):
         self.user_id = int(user_id)
         self.keyword = (keyword or "").strip()
