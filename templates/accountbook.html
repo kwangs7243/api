@@ -33,15 +33,15 @@
 
                 <section class="summary-bar account-summary">
                     <p class="summary-item summary-balance">
-                        현재 잔액 : {{ total_balance }} 원
+                        현재 잔액 : {{ transactions_summary.total_balance }} 원
                     </p>
                     
                     <p class="summary-item summary-income">
-                        총 수입 : {{ income_sum }} 원
+                        총 수입 : {{ transactions_summary.income_sum }} 원
                     </p>
 
                     <p class="summary-item summary-expense">
-                        총 지출 : {{ expense_sum }} 원
+                        총 지출 : {{ transactions_summary.expense_sum }} 원
                     </p>
                 </section>
             </header>

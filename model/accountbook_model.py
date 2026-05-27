@@ -1,19 +1,12 @@
 from dbmanager import Dbmanager
 class AccountBookModel:
     # 내용 추가
-    def add_transactions(self,user_id,category,amount,content):
-        if not category in ["income","expense"]:
-            return
-        
-        try:
-            amount = int(amount)
-        except ValueError:
-            return
-        
-        content = content.strip()
-        if not content:
-            return
-        
+    def add_transactions(self,dto):
+        user_id = dto.user_id
+        category = dto.category
+        amount = dto.amount
+        content = dto.content
+
         with Dbmanager(commit=True) as cursor:
             sql = """
                     INSERT INTO accountbook
@@ -22,11 +15,16 @@ class AccountBookModel:
                     """
             cursor.execute(sql,(user_id, category, amount, content, False))
     # 가계부 내역 가져오기
-    def get_user_transactions(self, user_id, keyword="", category=None, sort_by="created_at", order="desc"):
+    def get_user_transactions(self,dto):
+        user_id = dto.user_id
+        keyword = dto.keyword
+        category = dto.category
+        sort_by = dto.sort_by
+        order = dto.order
+
         where_clauses = []
         params = [user_id, False]
 
-        keyword = keyword.strip()
         if keyword:
             where_clauses.append("content LIKE %s")
             params.append(f"%{keyword}%")
@@ -35,13 +33,6 @@ class AccountBookModel:
             where_clauses.append("category = %s")
             params.append(category)
         
-        if sort_by not in ["created_at", "content", "amount", "balance", "category"]:
-            sort_by = "created_at"
-        
-        order = order.lower()
-        if order not in ["asc", "desc"]:
-            order = "desc"
-
         outer_where = ""
         if where_clauses:
             outer_where = "WHERE " + " AND ".join(where_clauses)
@@ -66,12 +57,9 @@ class AccountBookModel:
             transactions = cursor.fetchall()
         return transactions
     # 내역 삭제하기
-    def delete_transaction(self,tt_id,user_id):
-        try:
-            tt_id = int(tt_id)
-        except ValueError:
-            return
-        
+    def delete_transaction(self,dto):
+        user_id = dto.user_id
+        tt_id = dto.tt_id
         with Dbmanager(commit=True) as cursor:
             sql = """
                     UPDATE accountbook
@@ -80,33 +68,26 @@ class AccountBookModel:
                     """
             cursor.execute(sql, (True, user_id, tt_id))
     # 내역 수정하기
-    def update_transactions(self, tt_id, user_id, content, category, amount):
-        try:
-            tt_id = int(tt_id)
-        except ValueError:
-            return
-        
+    def update_transactions(self, dto):
+        content = dto.content
+        category = dto.category
+        amount = dto.amount
+        user_id = dto.user_id
+        tt_id = dto.tt_id
         set_clauses = []
         params = []
-        
-        content = content.strip()
-        if not content:
-            return
-        set_clauses.append("content = %s")
-        params.append(content)
-        
-        
-        if category in ["income", "expense"]:
+
+        if content:
+            set_clauses.append("content = %s")
+            params.append(content)
+
+        if category:
             set_clauses.append("category = %s")
             params.append(category)
         
-        
-        try:
-            amount = int(amount)
-        except ValueError:
-            return
-        set_clauses.append("amount = %s")
-        params.append(amount)
+        if amount:
+            set_clauses.append("amount = %s")
+            params.append(amount)
         
         if not set_clauses:
             return
@@ -119,7 +100,8 @@ class AccountBookModel:
                     """
             cursor.execute(sql, params + [user_id, tt_id])
 
-    def get_summary_transaction(self,user_id):
+    def get_summary_transaction(self,dto):
+        user_id = dto.user_id
         with Dbmanager() as cursor:
             sql = """
                     SELECT (income_sum - expense_sum) AS total_balance , income_sum, expense_sum
