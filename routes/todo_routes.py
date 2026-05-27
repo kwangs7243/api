@@ -1,6 +1,6 @@
 from flask import Blueprint, session, redirect, render_template, request
-from model.todo_model import TodoModel
-from model.user_model import UserModel
+from models.todo_model import TodoModel
+from models.user_model import UserModel
 tm = TodoModel()
 um = UserModel()
 todo_bp = Blueprint("todo",__name__)

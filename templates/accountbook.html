@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="user-name">
-                            <strong>사용자:</strong> {{ name }}
+                            <strong>사용자:</strong> {{ user_name }}
                         </div>
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                                             <form action="/accountbook/update" method="post" class="form update-form update_form">
                                                 <input type="hidden" name="tt_id" value="{{ transaction.id }}">
                                                 <input type="hidden" name="keyword" value="{{ keyword }}">
-                                                <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
+                                                <input type="hidden" name="category" value="{{ '' if dto.category is none else ('income' if dto.category == 'income' else 'expense') }}">
                                                 <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                                 <input type="hidden" name="order" value="{{ order }}">
 
@@ -238,7 +238,7 @@
                                             <form action="/accountbook/delete" method="post" class="form delete-form delete_form">
                                                 <input type="hidden" name="tt_id" value="{{ transaction.id }}">
                                                 <input type="hidden" name="keyword" value="{{ keyword }}">
-                                                <input type="hidden" name="category" value="{{ '' if category is none else ('income' if category == 'income' else 'expense') }}">
+                                                <input type="hidden" name="category" value="{{ '' if dto.category is none else ('income' if dto.category == 'income' else 'expense') }}">
                                                 <input type="hidden" name="sort_by" value="{{ sort_by }}">
                                                 <input type="hidden" name="order" value="{{ order }}">
                                                 <button type="submit" class="btn btn-danger">삭제</button>

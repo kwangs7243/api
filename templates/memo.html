@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="user-name">
-                            <strong>사용자:</strong> {{ name }}
+                            <strong>사용자:</strong> {{ user_name }}
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                                 name="keyword"
                                 id="keyword"
                                 class="form-input"
-                                value="{{ keyword }}"
+                                value="{{ dto.keyword }}"
                                 placeholder="메모 내용 검색"
                             >
                         </div>
@@ -58,26 +58,26 @@
                         <div class="form-row">
                             <label for="important" class="form-label">중요 여부</label>
                             <select name="important" id="important" class="form-select">
-                                <option value="" {{ "selected" if important is none else "" }}>전체</option>
-                                <option value="1" {{ "selected" if important == true else "" }}>중요만</option>
-                                <option value="0" {{ "selected" if important == false else "" }}>일반만</option>
+                                <option value="" {{ "selected" if dto.important is none else "" }}>전체</option>
+                                <option value="1" {{ "selected" if dto.important is true else "" }}>중요만</option>
+                                <option value="0" {{ "selected" if dto.important is false else "" }}>일반만</option>
                             </select>
                         </div>
 
                         <div class="form-row">
                             <label for="sort_by" class="form-label">정렬 기준</label>
                             <select name="sort_by" id="sort_by" class="form-select">
-                                <option value="created_at" {{ "selected" if sort_by == "created_at" else "" }}>날짜</option>
-                                <option value="content" {{ "selected" if sort_by == "content" else "" }}>내용</option>
-                                <option value="important" {{ "selected" if sort_by == "important" else "" }}>중요</option>
+                                <option value="created_at" {{ "selected" if dto.sort_by == "created_at" else "" }}>날짜</option>
+                                <option value="content" {{ "selected" if dto.sort_by == "content" else "" }}>내용</option>
+                                <option value="important" {{ "selected" if dto.sort_by == "important" else "" }}>중요</option>
                             </select>
                         </div>
 
                         <div class="form-row">
                             <label for="order" class="form-label">정렬 방향</label>
                             <select name="order" id="order" class="form-select">
-                                <option value="desc" {{ "selected" if order == "desc" else "" }}>내림차순</option>
-                                <option value="asc" {{ "selected" if order == "asc" else "" }}>오름차순</option>
+                                <option value="desc" {{ "selected" if dto.order == "desc" else "" }}>내림차순</option>
+                                <option value="asc" {{ "selected" if dto.order == "asc" else "" }}>오름차순</option>
                             </select>
                         </div>
                     </form>
@@ -98,10 +98,10 @@
                     <h2 class="section-title">메모 추가</h2>
 
                     <form action="/memo/add" method="post" id="add_form" class="form add-form">
-                        <input type="hidden" name="keyword" value="{{ keyword }}">
-                        <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                        <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                        <input type="hidden" name="order" value="{{ order }}">
+                        <input type="hidden" name="keyword" value="{{ dto.keyword }}">
+                        <input type="hidden" name="important" value="{{ '' if dto.important is none else (1 if dto.important else 0) }}">
+                        <input type="hidden" name="sort_by" value="{{ dto.sort_by }}">
+                        <input type="hidden" name="order" value="{{ dto.order }}">
 
                         <div class="form-row">
                             <label for="add_content" class="form-label">내용</label>
@@ -158,10 +158,10 @@
                                         <div class="action-box">
                                             <form action="/memo/important" method="post" class="form toggle-form">
                                                 <input type="hidden" name="memo_id" value="{{ memo.id }}">
-                                                <input type="hidden" name="keyword" value="{{ keyword }}">
-                                                <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <input type="hidden" name="keyword" value="{{ dto.keyword }}">
+                                                <input type="hidden" name="important" value="{{ '' if dto.important is none else (1 if dto.important else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ dto.sort_by }}">
+                                                <input type="hidden" name="order" value="{{ dto.order }}">
                                                 <button type="submit" class="btn btn-secondary">
                                                     {{ "중요 해제" if memo.important else "중요 설정" }}
                                                 </button>
@@ -171,10 +171,10 @@
                                         <div class="action-box">
                                             <form action="/memo/update" method="post" class="form update-form update_form">
                                                 <input type="hidden" name="memo_id" value="{{ memo.id }}">
-                                                <input type="hidden" name="keyword" value="{{ keyword }}">
-                                                <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <input type="hidden" name="keyword" value="{{ dto.keyword }}">
+                                                <input type="hidden" name="important" value="{{ '' if dto.important is none else (1 if dto.important else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ dto.sort_by }}">
+                                                <input type="hidden" name="order" value="{{ dto.order }}">
 
                                                 <p class="action-title">수정</p>
 
@@ -192,10 +192,10 @@
                                         <div class="action-box">
                                             <form action="/memo/delete" method="post" class="form delete-form delete_form">
                                                 <input type="hidden" name="memo_id" value="{{ memo.id }}">
-                                                <input type="hidden" name="keyword" value="{{ keyword }}">
-                                                <input type="hidden" name="important" value="{{ '' if important is none else (1 if important else 0) }}">
-                                                <input type="hidden" name="sort_by" value="{{ sort_by }}">
-                                                <input type="hidden" name="order" value="{{ order }}">
+                                                <input type="hidden" name="keyword" value="{{ dto.keyword }}">
+                                                <input type="hidden" name="important" value="{{ '' if dto.important is none else (1 if dto.important else 0) }}">
+                                                <input type="hidden" name="sort_by" value="{{ dto.sort_by }}">
+                                                <input type="hidden" name="order" value="{{ dto.order }}">
                                                 <button type="submit" class="btn btn-danger">삭제</button>
                                             </form>
                                         </div>

@@ -11,7 +11,7 @@ class Dbmanager:
                     user=os.environ.get("user"),
                     password=os.environ.get("password"),
                     database=os.environ.get("database"),
-                    charset="utf-8",
+                    charset="utf8",
                     cursorclass=pymysql.cursors.DictCursor
                     )
         self.cursor = self.conn.cursor()

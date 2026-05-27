@@ -20,10 +20,10 @@ class UserModel:
             result = cursor.fetchone()
         user_id = result["id"] if result else None
         return user_id
-    def get_user_name(self,user_id): # 유저이름 가져오기
+    def get_user_name(self,dto): # 유저이름 가져오기
         with Dbmanager() as cursor:
             sql = "SELECT name FROM users WHERE id = %s"
-            cursor.execute(sql,(user_id,))
+            cursor.execute(sql,(dto.user_id,))
             name = cursor.fetchone()
         if name:
             return name["name"]

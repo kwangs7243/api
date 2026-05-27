@@ -20,16 +20,16 @@ def main():
         order = request.args.get("order")
         )
 
-    name = um.get_user_name(filter_dto.user_id)
+    user_name = um.get_user_name(filter_dto)
+
     transactions = transactions_format(am.get_user_transactions(filter_dto))
-    
     
     transactions_summary = summary_format(am.get_summary_transaction(filter_dto))
    
 
     return render_template(
         "accountbook.html", 
-        name=name, transactions=transactions, dto=filter_dto,
+        user_name=user_name, transactions=transactions, dto=filter_dto,
         transactions_summary = transactions_summary)
 
 @accountbook_bp.route("/add", methods=["POST"])
@@ -39,10 +39,10 @@ def add():
 
     filter_dto = TransactionFilterDTO(
         user_id=session["user_id"],
-        keyword=request.args.get("keyword"),
-        category=request.args.get("category"),
-        sort_by=request.args.get("sort_by"),
-        order=request.args.get("order")
+        keyword=request.form.get("keyword"),
+        category=request.form.get("category"),
+        sort_by=request.form.get("sort_by"),
+        order=request.form.get("order")
     )
 
     create_dto = TransactionCreateDTO(
@@ -70,10 +70,10 @@ def update():
     
     filter_dto = TransactionFilterDTO(
         user_id=session["user_id"],
-        keyword=request.args.get("keyword"),
-        category=request.args.get("category"),
-        sort_by=request.args.get("sort_by"),
-        order=request.args.get("order")
+        keyword=request.form.get("keyword"),
+        category=request.form.get("category"),
+        sort_by=request.form.get("sort_by"),
+        order=request.form.get("order")
     )
    
    
@@ -103,10 +103,10 @@ def delete():
         return redirect("/sign/in")
     filter_dto = TransactionFilterDTO(
         user_id=session["user_id"],
-        keyword=request.args.get("keyword"),
-        category=request.args.get("category"),
-        sort_by=request.args.get("sort_by"),
-        order=request.args.get("order")
+        keyword=request.form.get("keyword"),
+        category=request.form.get("category"),
+        sort_by=request.form.get("sort_by"),
+        order=request.form.get("order")
     )
     delete_dto = TransactionDeleteDTO(
         user_id=session["user_id"],
@@ -114,7 +114,7 @@ def delete():
     )
     
     am.delete_transaction(delete_dto)
-    
+
     return redirect(
     url_for(
         "accountbook.main",
